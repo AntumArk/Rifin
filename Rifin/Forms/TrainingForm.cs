@@ -8,18 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Rifin
+namespace Rifin.Forms
 {
-    public partial class MainWindow : Form
+    public partial class TrainingForm : Form
     {
-        public MainWindow()
+        public TrainingForm()
         {
             InitializeComponent();
-        }
-
-        private void AddSong_Button_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
