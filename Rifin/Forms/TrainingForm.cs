@@ -26,6 +26,7 @@ namespace Rifin.Forms
             InitializeComponent();
             TrainingData = new List<Mat>();
             Labels = new List<Vec2f>();
+            addDescriptorControl1.Hide();
         }
 
         private void TrainingForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -115,7 +116,7 @@ namespace Rifin.Forms
 
             if (confirmResult == DialogResult.Yes)
             {
-                DetectFeatures(TrainingData);
+                //DetectFeatures(TrainingData);
                 TrainNewt();
                 MessageBox.Show("Training completed Sensei");
             }
@@ -149,67 +150,12 @@ namespace Rifin.Forms
             
           
         }
-        /// <summary>
-        /// Gets all features that describes your object
-        /// </summary>
-        private void DetectFeatures(List<Mat> trainingData)
-        {
-            ////-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
-            int minHessian = 400;
-            SURF detector = SURF.Create(minHessian);
-
-
-            foreach (var item in trainingData)
-            {
-                KeyPoint[] keypoints;
-                Mat descriptors = new Mat();
-
-                FileStorage fs=new FileStorage("Keypoints.yml", FileStorage.Mode.Write);
-                detector.DetectAndCompute(item, new Mat(), out keypoints, descriptors);
-                int j = 0;
-                Mat imge = new Mat();
-
-                item.CopyTo(imge);
-                progressBar1.Step=1;
-                progressBar1.Maximum = keypoints.Length+1;
-                progressBar1.Minimum = 0;
-                progressBar1.Value = 0;
-                for (int i=0;i<keypoints.Length;i++)
-                {
-                    Cv2.Circle(imge,(int)keypoints[i].Pt.X, (int)keypoints[i].Pt.Y,5, Scalar.Red, 2);
-                    
-                fs.Write( "keypoints_1", keypoints[i].ToString());
-                   // fs.Write("descriptors_1", descriptors.ToString());
-
-                 
-                    progressBar1.Value += progressBar1.Step;
-            }
-                fs.Release();
-               // detector.Save(@"E:\Coding Workspace\TrainingData\Rifin\Keypoints\" + j + ".txt");
-                    j++;
-                //Window window = new Window(imge);
-               // Cv2.WaitKey(0);
-               // Window window1 = new Window(descriptors);
-               // window.Dispose();
-            }
-
-
-           
-           
-
-
-
-
-        }
        
 
-
-
-
-
-
-
-
+        private void AddItemButton_Click(object sender, EventArgs e)
+        {
+            addDescriptorControl1.Show();
         }
+    }
     
 }

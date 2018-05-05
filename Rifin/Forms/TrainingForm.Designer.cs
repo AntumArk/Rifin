@@ -36,6 +36,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.PosCount_Label = new System.Windows.Forms.Label();
             this.NegCount_Label = new System.Windows.Forms.Label();
+            this.AddItemButton = new System.Windows.Forms.Button();
+            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -110,11 +112,30 @@
             this.NegCount_Label.TabIndex = 11;
             this.NegCount_Label.Text = "Negative samples:";
             // 
+            // AddItemButton
+            // 
+            this.AddItemButton.Location = new System.Drawing.Point(140, 33);
+            this.AddItemButton.Name = "AddItemButton";
+            this.AddItemButton.Size = new System.Drawing.Size(25, 23);
+            this.AddItemButton.TabIndex = 12;
+            this.AddItemButton.Text = "+";
+            this.AddItemButton.UseVisualStyleBackColor = true;
+            this.AddItemButton.Click += new System.EventHandler(this.AddItemButton_Click);
+            // 
+            // addDescriptorControl1
+            // 
+            this.addDescriptorControl1.Location = new System.Drawing.Point(9, 5);
+            this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.Size = new System.Drawing.Size(357, 252);
+            this.addDescriptorControl1.TabIndex = 13;
+            // 
             // TrainingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(510, 417);
+            this.ClientSize = new System.Drawing.Size(366, 259);
+            this.Controls.Add(this.addDescriptorControl1);
+            this.Controls.Add(this.AddItemButton);
             this.Controls.Add(this.NegCount_Label);
             this.Controls.Add(this.PosCount_Label);
             this.Controls.Add(this.label1);
@@ -141,5 +162,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label PosCount_Label;
         private System.Windows.Forms.Label NegCount_Label;
+        private System.Windows.Forms.Button AddItemButton;
+        private AddDescriptorControl addDescriptorControl1;
     }
 }
