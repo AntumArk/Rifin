@@ -126,8 +126,10 @@
             // 
             this.addDescriptorControl1.Location = new System.Drawing.Point(9, 5);
             this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.ObjectName = null;
             this.addDescriptorControl1.Size = new System.Drawing.Size(357, 252);
             this.addDescriptorControl1.TabIndex = 13;
+            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
             // 
             // TrainingForm
             // 

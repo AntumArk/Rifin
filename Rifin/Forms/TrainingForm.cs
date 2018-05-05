@@ -16,7 +16,7 @@ namespace Rifin.Forms
 {
     public partial class TrainingForm : Form
     {
-
+        public List<string> TrainingObjects = new List<string>();
         public List<Mat> TrainingData;
         public List<Vec2f> Labels;
         
@@ -155,6 +155,16 @@ namespace Rifin.Forms
         private void AddItemButton_Click(object sender, EventArgs e)
         {
             addDescriptorControl1.Show();
+        }
+
+        private void addDescriptorControl1_VisibleChanged(object sender, EventArgs e)
+        {
+           if(!addDescriptorControl1.Visible&&addDescriptorControl1.ObjectName!=null)
+            {
+                TrainingObjects.Add(addDescriptorControl1.ObjectName);
+                TrainingType_ComboBox.Items.Add(addDescriptorControl1.ObjectName);
+
+            }
         }
     }
     

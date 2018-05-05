@@ -93,17 +93,21 @@ namespace Rifin.Forms
                     ResourcesProgressBar.Maximum = fileNames.Count;
 
                     ResourcesProgressBar.Value = 0;
-                    var folderPath = "/Data";
+                    Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    System.IO.Directory.CreateDirectory(ObjectName);
+                    Environment.CurrentDirectory = ObjectName;
                     var fileName ="Keypoints_" + fileNames[i] + ".yml";
-                    var fullPath = Path.Combine(folderPath, fileName);
-                    FileStorage fs = new FileStorage(fullPath, FileStorage.Mode.Write);
+                   // string filePath = Path.Combine(myFolder, fileName);
+
+                    FileStorage fs = new FileStorage(fileName, FileStorage.Mode.Write);
                     for (int j = 0; j < ObjectKeyPoints[i].Length; j++)
                     {
                         fs.Write(ObjectName, ObjectKeyPoints[i][j].ToString());
                        
                     }
                     fs.Release();
-                    ResourcesProgressBar.Value += ResourcesProgressBar.Step;
+                     ResourcesProgressBar.Value += ResourcesProgressBar.Step;
+                    
                 }
                 Hide();
             }
