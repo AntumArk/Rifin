@@ -34,6 +34,8 @@
             this.PosDataFolder_Button = new System.Windows.Forms.Button();
             this.TrainingType_ComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.PosCount_Label = new System.Windows.Forms.Label();
+            this.NegCount_Label = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // progressBar1
@@ -51,6 +53,7 @@
             this.Train_Button.TabIndex = 6;
             this.Train_Button.Text = "Train";
             this.Train_Button.UseVisualStyleBackColor = true;
+            this.Train_Button.Click += new System.EventHandler(this.Train_Button_ClickAsync);
             // 
             // NegDataFolder_Button
             // 
@@ -60,6 +63,7 @@
             this.NegDataFolder_Button.TabIndex = 5;
             this.NegDataFolder_Button.Text = "Select Negative Data folder";
             this.NegDataFolder_Button.UseVisualStyleBackColor = true;
+            this.NegDataFolder_Button.Click += new System.EventHandler(this.NegDataFolder_Button_Click);
             // 
             // PosDataFolder_Button
             // 
@@ -69,6 +73,7 @@
             this.PosDataFolder_Button.TabIndex = 4;
             this.PosDataFolder_Button.Text = "Select Positive Data folder";
             this.PosDataFolder_Button.UseVisualStyleBackColor = true;
+            this.PosDataFolder_Button.Click += new System.EventHandler(this.PosDataFolder_Button_Click);
             // 
             // TrainingType_ComboBox
             // 
@@ -87,11 +92,31 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Select what to train";
             // 
+            // PosCount_Label
+            // 
+            this.PosCount_Label.AutoSize = true;
+            this.PosCount_Label.Location = new System.Drawing.Point(95, 61);
+            this.PosCount_Label.Name = "PosCount_Label";
+            this.PosCount_Label.Size = new System.Drawing.Size(88, 13);
+            this.PosCount_Label.TabIndex = 10;
+            this.PosCount_Label.Text = "Positive samples:";
+            // 
+            // NegCount_Label
+            // 
+            this.NegCount_Label.AutoSize = true;
+            this.NegCount_Label.Location = new System.Drawing.Point(98, 78);
+            this.NegCount_Label.Name = "NegCount_Label";
+            this.NegCount_Label.Size = new System.Drawing.Size(94, 13);
+            this.NegCount_Label.TabIndex = 11;
+            this.NegCount_Label.Text = "Negative samples:";
+            // 
             // TrainingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 271);
+            this.ClientSize = new System.Drawing.Size(510, 417);
+            this.Controls.Add(this.NegCount_Label);
+            this.Controls.Add(this.PosCount_Label);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.TrainingType_ComboBox);
             this.Controls.Add(this.progressBar1);
@@ -100,6 +125,7 @@
             this.Controls.Add(this.PosDataFolder_Button);
             this.Name = "TrainingForm";
             this.Text = "TrainingForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TrainingForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -113,5 +139,7 @@
         private System.Windows.Forms.Button PosDataFolder_Button;
         private System.Windows.Forms.ComboBox TrainingType_ComboBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label PosCount_Label;
+        private System.Windows.Forms.Label NegCount_Label;
     }
 }

@@ -78,6 +78,7 @@
             this.StartSteam_Button.Text = "Start Video";
             this.StartSteam_Button.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.StartSteam_Button.UseVisualStyleBackColor = false;
+            this.StartSteam_Button.CheckedChanged += new System.EventHandler(this.StartSteam_Button_CheckedChanged);
             // 
             // Training_Button
             // 
@@ -87,6 +88,7 @@
             this.Training_Button.TabIndex = 7;
             this.Training_Button.Text = "Training";
             this.Training_Button.UseVisualStyleBackColor = true;
+            this.Training_Button.Click += new System.EventHandler(this.Training_Button_Click);
             // 
             // comboBox1
             // 
@@ -199,6 +201,7 @@
             this.Controls.Add(this.Main_PictureBox);
             this.Name = "MainWindow";
             this.Text = "MainWindow";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainWindow_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Side_PictureBox)).EndInit();
             this.panel1.ResumeLayout(false);
