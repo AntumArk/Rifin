@@ -19,10 +19,11 @@ namespace Rifin.Forms
         public List<string> TrainingObjects = new List<string>();
         public List<Mat> TrainingData;
         public List<Vec2f> Labels;
-        
+        private MainWindow context;
 
-        public TrainingForm( )
+        public TrainingForm(MainWindow mainWindow )
         {
+            context = mainWindow;
             InitializeComponent();
             TrainingData = new List<Mat>();
             Labels = new List<Vec2f>();
@@ -31,8 +32,8 @@ namespace Rifin.Forms
 
         private void TrainingForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            MainWindow f = new MainWindow();
-            f.Show();
+           // MainWindow f = new MainWindow();
+           // f.Show();
         }
         /// <summary>
         /// Positive data file selection
@@ -138,7 +139,7 @@ namespace Rifin.Forms
 
             Mat []trainData = TrainingData.ToArray();
             Mat labelData = new Mat(TrainingData.Count, 1, MatType.CV_32SC1);
-            
+       
           /*  for (int i = 0; i < trainingData.Count; i++)
             {
                 trainData.Set(i, trainingData[i]);

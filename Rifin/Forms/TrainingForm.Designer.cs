@@ -124,7 +124,7 @@
             // 
             // addDescriptorControl1
             // 
-            this.addDescriptorControl1.Location = new System.Drawing.Point(9, 5);
+            this.addDescriptorControl1.Location = new System.Drawing.Point(342, 5);
             this.addDescriptorControl1.Name = "addDescriptorControl1";
             this.addDescriptorControl1.ObjectName = null;
             this.addDescriptorControl1.Size = new System.Drawing.Size(357, 252);
@@ -135,7 +135,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(366, 259);
+            this.ClientSize = new System.Drawing.Size(748, 340);
             this.Controls.Add(this.addDescriptorControl1);
             this.Controls.Add(this.AddItemButton);
             this.Controls.Add(this.NegCount_Label);

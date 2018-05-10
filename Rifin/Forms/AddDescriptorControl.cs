@@ -87,6 +87,7 @@ namespace Rifin.Forms
         {
             if (ObjectName != null && ObjectName != "")
             {
+
                 for (int i = 0; i < fileNames.Count; i++)
                 {
                     ResourcesProgressBar.Step = 1;
@@ -94,10 +95,10 @@ namespace Rifin.Forms
 
                     ResourcesProgressBar.Value = 0;
                     Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                    System.IO.Directory.CreateDirectory(ObjectName);
-                    Environment.CurrentDirectory = ObjectName;
+                    System.IO.Directory.CreateDirectory(Path.Combine("VisualData",ObjectName,"Keypoints"));
+
+                    Environment.CurrentDirectory = Path.Combine("VisualData", ObjectName, "Keypoints");
                     var fileName ="Keypoints_" + fileNames[i] + ".yml";
-                   // string filePath = Path.Combine(myFolder, fileName);
 
                     FileStorage fs = new FileStorage(fileName, FileStorage.Mode.Write);
                     for (int j = 0; j < ObjectKeyPoints[i].Length; j++)

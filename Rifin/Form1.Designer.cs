@@ -35,13 +35,17 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.AddSong_Button = new System.Windows.Forms.Button();
-            this.Song_TrackBar = new System.Windows.Forms.TrackBar();
-            this.SongPlay_Button = new System.Windows.Forms.CheckBox();
-            this.ResetSong_Button = new System.Windows.Forms.Button();
             this.SongProgress_Label = new System.Windows.Forms.Label();
+            this.ResetSong_Button = new System.Windows.Forms.Button();
+            this.SongPlay_Button = new System.Windows.Forms.CheckBox();
+            this.Song_TrackBar = new System.Windows.Forms.TrackBar();
+            this.AddSong_Button = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.Advanced_Button = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
+            this.AddObjectButton = new System.Windows.Forms.Button();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Side_PictureBox)).BeginInit();
             this.panel1.SuspendLayout();
@@ -82,7 +86,7 @@
             // 
             // Training_Button
             // 
-            this.Training_Button.Location = new System.Drawing.Point(12, 469);
+            this.Training_Button.Location = new System.Drawing.Point(13, 517);
             this.Training_Button.Name = "Training_Button";
             this.Training_Button.Size = new System.Drawing.Size(75, 23);
             this.Training_Button.TabIndex = 7;
@@ -123,31 +127,23 @@
             this.panel1.Size = new System.Drawing.Size(320, 222);
             this.panel1.TabIndex = 10;
             // 
-            // label2
+            // SongProgress_Label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 44);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Song Selection";
+            this.SongProgress_Label.AutoSize = true;
+            this.SongProgress_Label.Location = new System.Drawing.Point(127, 124);
+            this.SongProgress_Label.Name = "SongProgress_Label";
+            this.SongProgress_Label.Size = new System.Drawing.Size(29, 13);
+            this.SongProgress_Label.TabIndex = 15;
+            this.SongProgress_Label.Text = "Step";
             // 
-            // AddSong_Button
+            // ResetSong_Button
             // 
-            this.AddSong_Button.Location = new System.Drawing.Point(140, 60);
-            this.AddSong_Button.Name = "AddSong_Button";
-            this.AddSong_Button.Size = new System.Drawing.Size(23, 23);
-            this.AddSong_Button.TabIndex = 11;
-            this.AddSong_Button.Text = "+";
-            this.AddSong_Button.UseVisualStyleBackColor = true;
-            this.AddSong_Button.Click += new System.EventHandler(this.AddSong_Button_Click);
-            // 
-            // Song_TrackBar
-            // 
-            this.Song_TrackBar.Location = new System.Drawing.Point(12, 143);
-            this.Song_TrackBar.Name = "Song_TrackBar";
-            this.Song_TrackBar.Size = new System.Drawing.Size(305, 45);
-            this.Song_TrackBar.TabIndex = 12;
+            this.ResetSong_Button.Location = new System.Drawing.Point(56, 88);
+            this.ResetSong_Button.Name = "ResetSong_Button";
+            this.ResetSong_Button.Size = new System.Drawing.Size(46, 23);
+            this.ResetSong_Button.TabIndex = 14;
+            this.ResetSong_Button.Text = "Reset";
+            this.ResetSong_Button.UseVisualStyleBackColor = true;
             // 
             // SongPlay_Button
             // 
@@ -161,23 +157,31 @@
             this.SongPlay_Button.Text = "Play";
             this.SongPlay_Button.UseVisualStyleBackColor = false;
             // 
-            // ResetSong_Button
+            // Song_TrackBar
             // 
-            this.ResetSong_Button.Location = new System.Drawing.Point(56, 88);
-            this.ResetSong_Button.Name = "ResetSong_Button";
-            this.ResetSong_Button.Size = new System.Drawing.Size(46, 23);
-            this.ResetSong_Button.TabIndex = 14;
-            this.ResetSong_Button.Text = "Reset";
-            this.ResetSong_Button.UseVisualStyleBackColor = true;
+            this.Song_TrackBar.Location = new System.Drawing.Point(12, 143);
+            this.Song_TrackBar.Name = "Song_TrackBar";
+            this.Song_TrackBar.Size = new System.Drawing.Size(305, 45);
+            this.Song_TrackBar.TabIndex = 12;
             // 
-            // SongProgress_Label
+            // AddSong_Button
             // 
-            this.SongProgress_Label.AutoSize = true;
-            this.SongProgress_Label.Location = new System.Drawing.Point(127, 124);
-            this.SongProgress_Label.Name = "SongProgress_Label";
-            this.SongProgress_Label.Size = new System.Drawing.Size(29, 13);
-            this.SongProgress_Label.TabIndex = 15;
-            this.SongProgress_Label.Text = "Step";
+            this.AddSong_Button.Location = new System.Drawing.Point(140, 60);
+            this.AddSong_Button.Name = "AddSong_Button";
+            this.AddSong_Button.Size = new System.Drawing.Size(23, 23);
+            this.AddSong_Button.TabIndex = 11;
+            this.AddSong_Button.Text = "+";
+            this.AddSong_Button.UseVisualStyleBackColor = true;
+            this.AddSong_Button.Click += new System.EventHandler(this.AddSong_Button_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(9, 44);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(79, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Song Selection";
             // 
             // Advanced_Button
             // 
@@ -188,11 +192,52 @@
             this.Advanced_Button.Text = "Advanced Controls";
             this.Advanced_Button.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(141, 517);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(118, 24);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Objects List";
+            // 
+            // addDescriptorControl1
+            // 
+            this.addDescriptorControl1.Location = new System.Drawing.Point(290, 498);
+            this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.ObjectName = null;
+            this.addDescriptorControl1.Size = new System.Drawing.Size(359, 167);
+            this.addDescriptorControl1.TabIndex = 12;
+            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
+            // 
+            // AddObjectButton
+            // 
+            this.AddObjectButton.Location = new System.Drawing.Point(265, 520);
+            this.AddObjectButton.Name = "AddObjectButton";
+            this.AddObjectButton.Size = new System.Drawing.Size(29, 23);
+            this.AddObjectButton.TabIndex = 15;
+            this.AddObjectButton.Text = "+";
+            this.AddObjectButton.UseVisualStyleBackColor = true;
+            this.AddObjectButton.Click += new System.EventHandler(this.AddObjectButton_Click);
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(145, 545);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(100, 96);
+            this.richTextBox1.TabIndex = 16;
+            this.richTextBox1.Text = "";
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.Controls.Add(this.richTextBox1);
+            this.Controls.Add(this.AddObjectButton);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.addDescriptorControl1);
             this.Controls.Add(this.Advanced_Button);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.Training_Button);
@@ -227,6 +272,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label SongProgress_Label;
         private System.Windows.Forms.Button Advanced_Button;
+        private Forms.AddDescriptorControl addDescriptorControl1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button AddObjectButton;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 
