@@ -21,128 +21,153 @@ namespace Rifin
         public List<string> TrainingObjects = new List<string>();
       
         public VideoCapture capture;
-        public Thread videoStreamThread;
-        public Thread mainThread;
+        private BackgroundWorker matchingWorker;
         public Mat Source;
-
+        private System.Windows.Forms.Timer timer; //Used for reading data in the right time. 
+        
         public MainWindow()
         {
             InitializeComponent();
+
             Source = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,Scalar.White);
             addDescriptorControl1.Hide();
+            capture = new VideoCapture(0);
 
             Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
+            //Loading already prepared objects
           var directories= Directory.EnumerateDirectories(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData")).ToList();
             foreach (var dir in directories)
             {
                TrainingObjects.Add( dir.Substring(dir.LastIndexOf("\\") + 1));
             }
+            //Updating text field with those objects
             richTextBox1.ResetText();
             if (TrainingObjects != null)
                 foreach (var obj in TrainingObjects)
                     if (obj != null)
                         richTextBox1.AppendText(obj.ToString() + "\n");
 
-            videoStreamThread = new Thread(videoStreamT);
-            mainThread = new Thread(mainT);
-            mainThread.Start();
+
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = (int)(1000 / 30);
+            timer.Tick += new EventHandler(timer_Tick);
+
+
+            //Initialize threads
+            matchingWorker = new BackgroundWorker();
+            matchingWorker.WorkerReportsProgress = true;
+            matchingWorker.DoWork += new DoWorkEventHandler(FindMatches);
+            matchingWorker.ProgressChanged += new ProgressChangedEventHandler(matchingWorker_progressChanged);
+            matchingWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(matchingCompleted);
         }
-        /// <summary>
-        /// Adds song to the list
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddSong_Button_Click(object sender, EventArgs e)
+
+        private void matchingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            //    throw new NotImplementedException();
+            var result = (Mat)e.Result;
 
+
+
+
+            Side_PictureBox.Image = result.ToBitmap();
         }
-        /// <summary>
-        /// Launches training window
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Training_Button_Click(object sender, EventArgs e)
+
+        private void matchingWorker_progressChanged(object sender, ProgressChangedEventArgs e)
         {
-           // this.Hide();
-            TrainingForm n = new TrainingForm(this);
-            n.ShowDialog();
-            
-        }
-        
-
-        private void StartSteam_Button_CheckedChanged(object sender, EventArgs e)
-        {
-            if (StartSteam_Button.Checked)
-            {if (videoStreamThread.ThreadState != ThreadState.Suspended)
-                    videoStreamThread.Start();
-                else
-                    videoStreamThread.Resume();
-                StartSteam_Button.BackColor = Color.Red;
-                StartSteam_Button.Text = "Stop Video";
-            }
-            else
-            {
-                videoStreamThread.Suspend();
-                StartSteam_Button.BackColor = Color.Green;
-                StartSteam_Button.Text = "Start Video";
-
-
-            }
-
-        }
-
-        /// <summary>
-        /// Reads video images
-        /// </summary>
-        private void videoStreamT()
-        {
-            capture = new VideoCapture(0);
-            while(true)
-            {
-                GC.Collect();
-                Mat src = new Mat();
-                capture.Read(src);
-                
-                src.CopyTo(Source);
-                // src = DetectFeatures(src);
-                foreach (var obj in TrainingObjects)
-                {
-                    GetGoodMatches(src, obj);
-                }
-                    Main_PictureBox.Image = src.ToBitmap();
-                
-                
-            }
-        }
-        /// <summary>
-        /// Image processing and Main_Picturebox updates
-        /// </summary>
-        private void mainT()
-        {
-            while (true) {
-              
-             //   Main_PictureBox.Image = Source.ToBitmap();
-            }
-           
-        }
+          //  throw new NotImplementedException();
       
-        private void GetGoodMatches(Mat source,string objectName)
+        }
+      /*  private void btnSURF_Click(object sender, EventArgs e)
         {
+            Mat template = Cv2.ImRead(txtTemplate.Text, LoadMode.GrayScale);
+            Mat src = Cv2.ImRead(txtScene.Text, LoadMode.Color);
+            Cv2.Resize(src, src, new OpenCvSharp.CPlusPlus.Size(1920, 1080));
+            Mat scene = new Mat();
+            Cv2.CvtColor(src, scene, ColorConversion.RgbToGray);
+
+            //Cv2.Resize(scene, scene, new OpenCvSharp.CPlusPlus.Size(1920, 1080));
+
+            SURF surf = new SURF(500, 4, 2, true, true);
+
+            KeyPoint[] keypoints_template = { };
+            KeyPoint[] keypoints_scene = { };
+
+            MatOfFloat descriptor_template = new MatOfFloat();
+            MatOfFloat descriptor_scene = new MatOfFloat();
+
+            surf.Run(template, null, out keypoints_template, descriptor_template);
+            surf.Run(scene, null, out keypoints_scene, descriptor_scene);
+
+            Window showtempl = new Window("template", WindowMode.FreeRatio);
+            Window showscene = new Window("scene", WindowMode.FreeRatio);
+
+            //Cia tik svarbus taskai atvaizduojami
+            Mat template_ = new Mat();
+            Mat scene_ = new Mat();
+            Cv2.DrawKeypoints(template, keypoints_template, template_);
+            Cv2.DrawKeypoints(scene, keypoints_scene, scene_);
+
+            BFMatcher matcher = new BFMatcher(NormType.L2, false);
+            DMatch[] matches = matcher.Match(descriptor_template, descriptor_scene);
+
+            //Draw matches
+            Mat view = new Mat();
+            Cv2.DrawMatches(template, keypoints_template, scene, keypoints_scene, matches, view);
+
+            List<OpenCvSharp.CPlusPlus.Point> points = new List<OpenCvSharp.CPlusPlus.Point>();
+            for (int i = 0; i < matches.Length; i++)
+            {
+                if (matches[i].Distance < 5)
+                {
+                    points.Add(keypoints_scene[matches[i].TrainIdx].Pt);
+                }
+            }
+            Mat view2 = new Mat();
+            scene.CopyTo(view2);
+
+            foreach (OpenCvSharp.CPlusPlus.Point pp in points)
+            {
+                Cv2.Circle(src, pp, 5, Scalar.Blue, 3);
+            }
+
+            Rect box = Cv2.BoundingRect(points);
+            Cv2.Rectangle(src, box, Scalar.Green, 5);
+            //    MessageBox.Show(" matches: " + matches.LongLength.ToString());
+
+            showtempl.Image = src;
+            showscene.Image = view;
+        }*/
+        /// <summary>
+        /// Background thread for finding good matches and drawing them on
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FindMatches(object sender, DoWorkEventArgs e)
+        {
+            List<object> genericlist = e.Argument as List<object>;
+            var src = (Mat)genericlist[0];
+            var objName = (string)genericlist[1];
+
             //Step one: 
             //Open folder of an object
-            var workPath= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),"VisualData", objectName);
+            var workPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", objName);
             Environment.CurrentDirectory = workPath;
             //Step two:
             //Load a list of items
             var imgFiles = Directory.GetFileSystemEntries("Images");
             var keypointFiles = Directory.GetFileSystemEntries("Keypoints");
 
-            // var fileName = "Keypoints_" + fileNames[i] + ".yml"
+            //Step 3:
+            //Change source image color
+            Cv2.CvtColor(src, src, ColorConversionCodes.RGB2GRAY);
+
+            float progressTick = 100/imgFiles.Length;
+
+            float counter = 0;
             foreach (var imgFile in imgFiles)
             {
-                Mat img_1 = Cv2.ImRead("../../Images/icons.png", ImreadModes.GrayScale);
-                Mat img_2 = Cv2.ImRead("../../Images/subIcons.png", ImreadModes.GrayScale);
+
+                Mat img_2 = Cv2.ImRead(imgFile, ImreadModes.GrayScale);
 
                 // Step 1: Detect the keypoints using SURF Detector, compute the descriptors
                 int minHessian = 400;
@@ -151,7 +176,7 @@ namespace Rifin
                 KeyPoint[] keypoints_1, keypoints_2;
                 Mat descriptors_1 = new Mat(), descriptors_2 = new Mat();
 
-                detector.DetectAndCompute(img_1, new Mat(), out keypoints_1, descriptors_1);
+                detector.DetectAndCompute(src, new Mat(), out keypoints_1, descriptors_1);
                 detector.DetectAndCompute(img_2, new Mat(), out keypoints_2, descriptors_2);
 
                 ////-- Step 2: Matching descriptor vectors using FLANN matcher
@@ -185,7 +210,7 @@ namespace Rifin
 
                 ////-- Draw only "good" matches
                 Mat img_matches = new Mat();
-                Cv2.DrawMatches(img_1, keypoints_1, img_2, keypoints_2,
+                Cv2.DrawMatches(src, keypoints_1, img_2, keypoints_2,
                     good_matches, img_matches, Scalar.All(-1), Scalar.All(-1),
                     new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);
 
@@ -195,15 +220,132 @@ namespace Rifin
                     Console.WriteLine("-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d", i,
                         good_matches[i].QueryIdx, good_matches[i].TrainIdx);
                 }
+                // Window window = new Window(img_matches);
+                //  Cv2.WaitKey(0);
+                List<OpenCvSharp.Point> points = new List<OpenCvSharp.Point>();
+                for (int i = 0; i < matches.Length; i++)
+                {
+                    if (matches[i].Distance < 5)
+                    {
+                        points.Add(keypoints_2[matches[i].TrainIdx].Pt);
+                    }
+                }
+             
+                foreach (OpenCvSharp.Point pp in points)
+                {
+                    Cv2.Circle(src, pp, 5, Scalar.Blue, 3);
+                }
 
-                Cv2.WaitKey(0);
+                Rect box = Cv2.BoundingRect(points);
+                Cv2.Rectangle(src, box, Scalar.Green, 5);
+                //    MessageBox.Show(" matches: " + matches.LongLength.ToString());
+
+                e.Result = img_matches;
+                counter += progressTick;
+                matchingWorker.ReportProgress((int)counter);
             }
-
-
-           
+            
 
         }
 
+        /// <summary>
+        /// Main event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer_Tick(object sender, EventArgs e)
+        {
+          
+           
+                GC.Collect();
+                Mat Source = new Mat();
+                     capture.Read(Source);
+            // src = DetectFeatures(src);
+            foreach (var obj in TrainingObjects)
+                {
+                    if (obj != null)
+                {
+                    List<object> arguments = new List<object>
+                    {
+                        Source,
+                        obj
+                    };
+                    if(!matchingWorker.IsBusy)
+                    matchingWorker.RunWorkerAsync(arguments);
+
+                    };
+                }
+                Main_PictureBox.Image = Source.ToBitmap();
+            
+        }
+
+        /// <summary>
+        /// Adds song to the list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddSong_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+        /// <summary>
+        /// Launches training window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Training_Button_Click(object sender, EventArgs e)
+        {
+           // this.Hide();
+            TrainingForm n = new TrainingForm(this);
+            n.ShowDialog();
+            
+        }
+        
+        /// <summary>
+        /// Start and launch control
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartSteam_Button_CheckedChanged(object sender, EventArgs e)
+        {
+            if (StartSteam_Button.Checked)
+            {
+                timer.Start();
+                StartSteam_Button.BackColor = Color.Red;
+                StartSteam_Button.Text = "Stop Video";
+                
+                
+
+            }
+            else
+            {
+                timer.Stop(); 
+
+                StartSteam_Button.BackColor = Color.Green;
+                StartSteam_Button.Text = "Start Video";
+                
+            }
+
+        }
+
+        private void Worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Image processing and Main_Picturebox updates
+        /// </summary>
+        private void mainT()
+        {
+          
+              
+             //   Main_PictureBox.Image = Source.ToBitmap();
+            
+           
+        }
+      
+       
         /// <summary>
         /// Proper way to close application
         /// </summary>
@@ -211,10 +353,7 @@ namespace Rifin
         /// <param name="e"></param>
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (videoStreamThread.ThreadState != ThreadState.Suspended)
-                videoStreamThread.Abort();
-            if (mainThread.ThreadState != ThreadState.Suspended)
-                mainThread.Abort();
+         
             if(capture!=null)
             capture.Release();
             Application.Exit();
