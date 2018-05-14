@@ -146,11 +146,14 @@ namespace Rifin
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FindMatches(object sender, DoWorkEventArgs e)
-        {
+        {   //Loads up a list of pictures and object name
             List<object> genericlist = e.Argument as List<object>;
             var src = (Mat)genericlist[0];
             var objName = (string)genericlist[1];
+
+            //Creates temp matrix
             Mat imgMatches = new Mat();
+
             //Step one: 
             //Open folder of an object
             var workPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", objName);
@@ -170,18 +173,22 @@ namespace Rifin
             int z = 0;
             foreach (var imgFile in imgFiles)
             {
-                
+                //Load database picture from file
                 Mat img_2 = Cv2.ImRead(imgFile, ImreadModes.GrayScale);
 
                 // Step 1: Detect the keypoints using SURF Detector, compute the descriptors
                 int minHessian = 400;
                 SURF detector = SURF.Create(minHessian);
 
+
                 KeyPoint[] keypoints_1, keypoints_2;
                 Mat descriptors_1 = new Mat(), descriptors_2 = new Mat();
 
+           
+                //Detect and compute descriptors
                 detector.DetectAndCompute(img_2, new Mat(), out keypoints_1, descriptors_1);
                 detector.DetectAndCompute(src, new Mat(), out keypoints_2, descriptors_2);
+               
 
                 ////-- Step 2: Matching descriptor vectors using FLANN matcher
                 FlannBasedMatcher matcher = new FlannBasedMatcher();
@@ -220,10 +227,6 @@ namespace Rifin
                     good_matches, imgMatches, Scalar.All(-1), Scalar.All(-1),
                     new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);*/
                 
-             
-               
-             
-               
 
                 Rect box = Cv2.BoundingRect(points);
                 Cv2.Rectangle(imgMatches, box, Scalar.Green, 5);
@@ -368,78 +371,7 @@ namespace Rifin
             addDescriptorControl1.Show();
         }
 
-        //// Token from C++ example:
-        //// http://docs.opencv.org/3.1.0/d5/d6f/tutorial_feature_flann_matcher.html
-        //// As of the writing of this routine,
-        //// SIFT and SURF is a non-free code and is moved to the
-        //// contrib repository and then link to the xfeatures2d library.
-
-        //// So, you will get runtime error:
-        //// Unable to find an entry point named 'xfeatures2d_SURF_create'
-        //// in DLL 'OpenCvSharpExtern'.
-
-        //// See these 2 links for an method on how to install the contrib library,
-        //// it's a bit trick but do-able:
-        //// https://github.com/shimat/opencvsharp/issues/146
-        //// https://github.com/shimat/opencvsharp/issues/180
-
-
-        //Mat img_1 = Cv2.ImRead("../../Images/icons.png", ImreadModes.GrayScale);
-        //Mat img_2 = Cv2.ImRead("../../Images/subIcons.png", ImreadModes.GrayScale);
-
-        ////-- Step 1: Detect the keypoints using SURF Detector, compute the descriptors
-        //int minHessian = 400;
-        //SURF detector = SURF.Create(minHessian);
-
-        //KeyPoint[] keypoints_1, keypoints_2;
-        //Mat descriptors_1 = new Mat(), descriptors_2 = new Mat();
-
-        //detector.DetectAndCompute(img_1, new Mat(), out keypoints_1, descriptors_1);
-        //detector.DetectAndCompute(img_2, new Mat(), out keypoints_2, descriptors_2);
-
-        ////-- Step 2: Matching descriptor vectors using FLANN matcher
-        //FlannBasedMatcher matcher = new FlannBasedMatcher();
-        //DMatch[] matches;
-
-        //matches = matcher.Match(descriptors_1, descriptors_2);
-        //double max_dist = 0; double min_dist = 100;
-
-        ////-- Quick calculation of max and min distances between keypoints
-        //for (int i = 0; i < descriptors_1.Rows; i++)
-        //{
-        //    double dist = matches[i].Distance;
-        //    if (dist < min_dist) min_dist = dist;
-        //    if (dist > max_dist) max_dist = dist;
-        //}
-        //Console.WriteLine("-- Max dist : %f", max_dist);
-        //Console.WriteLine("-- Min dist : %f", min_dist);
-
-        ////-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
-        ////-- or a small arbitrary value ( 0.02 ) in the event that min_dist is very
-        ////-- small)  //-- PS.- radiusMatch can also be used here.
-        //List<DMatch> good_matches = new List<DMatch>();
-        //for (int i = 0; i < descriptors_1.Rows; i++)
-        //{
-        //    if (matches[i].Distance <= Math.Max(2 * min_dist, 0.02))
-        //    {
-        //        good_matches.Add(matches[i]);
-        //    }
-        //}
-
-        ////-- Draw only "good" matches
-        //Mat img_matches = new Mat();
-        //Cv2.DrawMatches(img_1, keypoints_1, img_2, keypoints_2,
-        //    good_matches, img_matches, Scalar.All(-1), Scalar.All(-1),
-        //    new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);
-
-        ////-- Show detected matches  imshow( "Good Matches", img_matches );
-        //for (int i = 0; i < (int)good_matches.Count; i++)
-        //{
-        //    Console.WriteLine("-- Good Match [%d] Keypoint 1: %d  -- Keypoint 2: %d", i,
-        //        good_matches[i].QueryIdx, good_matches[i].TrainIdx);
-        //}
-
-        //Cv2.WaitKey(0);
+      
 
     }
 }
