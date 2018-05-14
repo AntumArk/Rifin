@@ -13,20 +13,23 @@ using System.Windows.Forms;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using OpenCvSharp.XFeatures2D;
+using Rifin.Data;
 using Rifin.Forms;
 
 namespace Rifin
 {
     public partial class MainWindow : Form
     {
-        public List<string> TrainingObjects = new List<string>();
-      
+        public List<string> TrainingObjects = new List<string>();//A list of part names
+        public List<Part> Parts = new List<Part>(); //A list to hold information about a part. Its name and its descriptors.
+
         public VideoCapture capture;
         private BackgroundWorker matchingWorker;
-        public Mat Source;
+
+        public Mat Source;  //Video frames
         private System.Windows.Forms.Timer timer; //Used for reading data in the right time. 
 
-        Window window = new Window("window",WindowMode.FreeRatio);
+      //  Window window = new Window("window",WindowMode.FreeRatio);
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +44,53 @@ namespace Rifin
             foreach (var dir in directories)
             {
                TrainingObjects.Add( dir.Substring(dir.LastIndexOf("\\") + 1));
+
+                Parts.Add(new Part { Name = dir.Substring(dir.LastIndexOf("\\") + 1) });
             }
+
+            //Load data for each part
+            foreach (var part in Parts)
+            {
+                part.Descriptors = new List<Mat>();
+                part.Images = new List<Mat>();
+                //Step one: 
+                //Open folder of an object
+                var workPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", part.Name);
+                Environment.CurrentDirectory = workPath;
+                //Step two:
+                //Load a list of items
+                var imgFiles = Directory.GetFileSystemEntries("Images");
+                var descFiles = Directory.GetFileSystemEntries("Descriptors");
+                Debug.WriteLine("Loading descriptors", "Loading");
+                //Load descriptors
+                foreach (var descFile in descFiles)
+                {
+
+                    using (var fs = new FileStorage(descFile, FileStorage.Mode.Read))
+                    {
+
+                        Mat mat = fs[part.Name].ReadMat();
+                        part.Descriptors.Add(mat);
+                        using (var window = new Window(mat))
+                        {
+                            Cv2.WaitKey(0);
+                        }
+                    }
+                 
+                }
+                Debug.WriteLine("Loading Images", "Loading");
+                //Load images
+                foreach (var imgFile in imgFiles)
+                {
+                    Mat mat = Cv2.ImRead(imgFile,ImreadModes.Color);
+                    part.Images.Add(mat);
+                   
+                }
+                Debug.WriteLine("Loading completed", "Loading");
+
+            }
+
+
             //Updating text field with those objects
             richTextBox1.ResetText();
             if (TrainingObjects != null)
@@ -63,15 +112,22 @@ namespace Rifin
             matchingWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(matchingCompleted);
         }
 
+        /// <summary>
+        /// Updates image, when matching is completed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void matchingCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             //    throw new NotImplementedException();
-            var result = (Mat)e.Result;
+            var result = (Mat)e.Result; //Result is a new image with rectangles showing found objects.
+            if (result != null)
+            {
+                Side_PictureBox.Image = result.ToBitmap();
 
-
-
-            window.Image= result;
-            window.ShowImage(result);
+              //  window.Image = result;
+              //  window.ShowImage(result);
+            }
 
         }
 
@@ -80,66 +136,8 @@ namespace Rifin
           //  throw new NotImplementedException();
       
         }
-      /*  private void btnSURF_Click(object sender, EventArgs e)
-        {
-            Mat template = Cv2.ImRead(txtTemplate.Text, LoadMode.GrayScale);
-            Mat src = Cv2.ImRead(txtScene.Text, LoadMode.Color);
-            Cv2.Resize(src, src, new OpenCvSharp.CPlusPlus.Size(1920, 1080));
-            Mat scene = new Mat();
-            Cv2.CvtColor(src, scene, ColorConversion.RgbToGray);
-
-            //Cv2.Resize(scene, scene, new OpenCvSharp.CPlusPlus.Size(1920, 1080));
-
-            SURF surf = new SURF(500, 4, 2, true, true);
-
-            KeyPoint[] keypoints_template = { };
-            KeyPoint[] keypoints_scene = { };
-
-            MatOfFloat descriptor_template = new MatOfFloat();
-            MatOfFloat descriptor_scene = new MatOfFloat();
-
-            surf.Run(template, null, out keypoints_template, descriptor_template);
-            surf.Run(scene, null, out keypoints_scene, descriptor_scene);
-
-            Window showtempl = new Window("template", WindowMode.FreeRatio);
-            Window showscene = new Window("scene", WindowMode.FreeRatio);
-
-            //Cia tik svarbus taskai atvaizduojami
-            Mat template_ = new Mat();
-            Mat scene_ = new Mat();
-            Cv2.DrawKeypoints(template, keypoints_template, template_);
-            Cv2.DrawKeypoints(scene, keypoints_scene, scene_);
-
-            BFMatcher matcher = new BFMatcher(NormType.L2, false);
-            DMatch[] matches = matcher.Match(descriptor_template, descriptor_scene);
-
-            //Draw matches
-            Mat view = new Mat();
-            Cv2.DrawMatches(template, keypoints_template, scene, keypoints_scene, matches, view);
-
-            List<OpenCvSharp.CPlusPlus.Point> points = new List<OpenCvSharp.CPlusPlus.Point>();
-            for (int i = 0; i < matches.Length; i++)
-            {
-                if (matches[i].Distance < 5)
-                {
-                    points.Add(keypoints_scene[matches[i].TrainIdx].Pt);
-                }
-            }
-            Mat view2 = new Mat();
-            scene.CopyTo(view2);
-
-            foreach (OpenCvSharp.CPlusPlus.Point pp in points)
-            {
-                Cv2.Circle(src, pp, 5, Scalar.Blue, 3);
-            }
-
-            Rect box = Cv2.BoundingRect(points);
-            Cv2.Rectangle(src, box, Scalar.Green, 5);
-            //    MessageBox.Show(" matches: " + matches.LongLength.ToString());
-
-            showtempl.Image = src;
-            showscene.Image = view;
-        }*/
+   
+       
         /// <summary>
         /// Background thread for finding good matches and drawing them on
         /// </summary>
@@ -148,20 +146,14 @@ namespace Rifin
         private void FindMatches(object sender, DoWorkEventArgs e)
         {   //Loads up a list of pictures and object name
             List<object> genericlist = e.Argument as List<object>;
-            var src = (Mat)genericlist[0];
-            var objName = (string)genericlist[1];
+            var src = (Mat)genericlist[0];  //Frame from camera
+            var objName = (string)genericlist[1];   //Object name (etc. Guitar, Bridge)
 
             //Creates temp matrix
             Mat imgMatches = new Mat();
 
-            //Step one: 
-            //Open folder of an object
-            var workPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", objName);
-            Environment.CurrentDirectory = workPath;
-            //Step two:
-            //Load a list of items
-            var imgFiles = Directory.GetFileSystemEntries("Images");
-            var keypointFiles = Directory.GetFileSystemEntries("Keypoints");
+
+            var imgFiles = "s";
 
             //Step 3:
             //Change source image color
@@ -174,7 +166,7 @@ namespace Rifin
             foreach (var imgFile in imgFiles)
             {
                 //Load database picture from file
-                Mat img_2 = Cv2.ImRead(imgFile, ImreadModes.GrayScale);
+                Mat img_2 = Cv2.ImRead("", ImreadModes.GrayScale);
 
                 // Step 1: Detect the keypoints using SURF Detector, compute the descriptors
                 int minHessian = 400;
@@ -246,18 +238,18 @@ namespace Rifin
         }
 
         /// <summary>
-        /// Main event
+        /// Main event. Reads video image, shows it to the main window. Processes current frame in worker thread.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void timer_Tick(object sender, EventArgs e)
         {
-          
-           
                 GC.Collect();
                 Mat Source = new Mat();
+            //Reads frame from camera
                      capture.Read(Source);
             // src = DetectFeatures(src);
+            //For each obeject, try to find a match.
             foreach (var obj in TrainingObjects)
                 {
                     if (obj != null)
@@ -272,12 +264,13 @@ namespace Rifin
 
                     };
                 }
+            //Updates mainWindow image to camera frame.
                 Main_PictureBox.Image = Source.ToBitmap();
             
         }
 
         /// <summary>
-        /// Adds song to the list
+        /// Adds song to the list. NOT IMPLEMENTED
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -299,7 +292,7 @@ namespace Rifin
         }
         
         /// <summary>
-        /// Start and launch control
+        /// Start and launch video
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -324,25 +317,7 @@ namespace Rifin
             }
 
         }
-
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Image processing and Main_Picturebox updates
-        /// </summary>
-        private void mainT()
-        {
-          
-              
-             //   Main_PictureBox.Image = Source.ToBitmap();
-            
-           
-        }
-      
-       
+        
         /// <summary>
         /// Proper way to close application
         /// </summary>
@@ -355,7 +330,11 @@ namespace Rifin
             capture.Release();
             Application.Exit();
         }
-
+        /// <summary>
+        /// Adds new object to the list when all of the descriptors, keypoints and images are saved.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void addDescriptorControl1_VisibleChanged(object sender, EventArgs e)
         {
             TrainingObjects.Add(addDescriptorControl1.ObjectName);
@@ -365,7 +344,11 @@ namespace Rifin
                     if (obj != null)
                         richTextBox1.AppendText(obj.ToString()+"\n");
         }
-
+        /// <summary>
+        /// Shows add new object window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddObjectButton_Click(object sender, EventArgs e)
         {
             addDescriptorControl1.Show();

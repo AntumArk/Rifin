@@ -87,7 +87,17 @@ namespace Rifin.Forms
                         fileNames.Add(i.ToString());
                       
                         img.SaveImage(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),"VisualData",ObjectName, "Images", i + ".jpg"));
-                        desc.SaveImage(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", ObjectName, "Descriptors", i + ".jpg"));
+                        //desc.SaveImage(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", ObjectName, "Descriptors", i + ".jpg"));
+                        using (var fs = new FileStorage(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", ObjectName, "Descriptors", i + ".yml"), FileStorage.Mode.Write | FileStorage.Mode.FormatYaml))
+                        {
+                            
+                            using (var tempMat = desc)
+                            {
+                                fs.Write(ObjectName, tempMat);
+                            }
+                        }
+                        
+                        
                         i++;
                         ResourcesProgressBar.Value += ResourcesProgressBar.Step;
                     }
