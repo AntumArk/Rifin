@@ -43,9 +43,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.Advanced_Button = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
             this.AddObjectButton = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Side_PictureBox)).BeginInit();
             this.panel1.SuspendLayout();
@@ -54,7 +54,7 @@
             // 
             // Main_PictureBox
             // 
-            this.Main_PictureBox.Location = new System.Drawing.Point(208, 12);
+            this.Main_PictureBox.Location = new System.Drawing.Point(108, 12);
             this.Main_PictureBox.Name = "Main_PictureBox";
             this.Main_PictureBox.Size = new System.Drawing.Size(640, 480);
             this.Main_PictureBox.TabIndex = 4;
@@ -62,9 +62,9 @@
             // 
             // Side_PictureBox
             // 
-            this.Side_PictureBox.Location = new System.Drawing.Point(854, 12);
+            this.Side_PictureBox.Location = new System.Drawing.Point(650, 12);
             this.Side_PictureBox.Name = "Side_PictureBox";
-            this.Side_PictureBox.Size = new System.Drawing.Size(320, 240);
+            this.Side_PictureBox.Size = new System.Drawing.Size(640, 480);
             this.Side_PictureBox.TabIndex = 5;
             this.Side_PictureBox.TabStop = false;
             // 
@@ -73,11 +73,11 @@
             this.StartSteam_Button.Appearance = System.Windows.Forms.Appearance.Button;
             this.StartSteam_Button.AutoSize = true;
             this.StartSteam_Button.BackColor = System.Drawing.Color.Lime;
-            this.StartSteam_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.StartSteam_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.StartSteam_Button.Location = new System.Drawing.Point(12, 12);
-            this.StartSteam_Button.MinimumSize = new System.Drawing.Size(140, 140);
+            this.StartSteam_Button.MinimumSize = new System.Drawing.Size(50, 50);
             this.StartSteam_Button.Name = "StartSteam_Button";
-            this.StartSteam_Button.Size = new System.Drawing.Size(140, 140);
+            this.StartSteam_Button.Size = new System.Drawing.Size(90, 50);
             this.StartSteam_Button.TabIndex = 6;
             this.StartSteam_Button.Text = "Start Video";
             this.StartSteam_Button.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -122,9 +122,9 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.comboBox1);
-            this.panel1.Location = new System.Drawing.Point(854, 270);
+            this.panel1.Location = new System.Drawing.Point(754, 498);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(320, 222);
+            this.panel1.Size = new System.Drawing.Size(320, 178);
             this.panel1.TabIndex = 10;
             // 
             // SongProgress_Label
@@ -185,9 +185,9 @@
             // 
             // Advanced_Button
             // 
-            this.Advanced_Button.Location = new System.Drawing.Point(13, 159);
+            this.Advanced_Button.Location = new System.Drawing.Point(12, 89);
             this.Advanced_Button.Name = "Advanced_Button";
-            this.Advanced_Button.Size = new System.Drawing.Size(139, 23);
+            this.Advanced_Button.Size = new System.Drawing.Size(75, 23);
             this.Advanced_Button.TabIndex = 11;
             this.Advanced_Button.Text = "Advanced Controls";
             this.Advanced_Button.UseVisualStyleBackColor = true;
@@ -201,15 +201,6 @@
             this.label3.Size = new System.Drawing.Size(118, 24);
             this.label3.TabIndex = 14;
             this.label3.Text = "Objects List";
-            // 
-            // addDescriptorControl1
-            // 
-            this.addDescriptorControl1.Location = new System.Drawing.Point(290, 498);
-            this.addDescriptorControl1.Name = "addDescriptorControl1";
-            this.addDescriptorControl1.ObjectName = null;
-            this.addDescriptorControl1.Size = new System.Drawing.Size(359, 167);
-            this.addDescriptorControl1.TabIndex = 12;
-            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
             // 
             // AddObjectButton
             // 
@@ -229,11 +220,20 @@
             this.richTextBox1.TabIndex = 16;
             this.richTextBox1.Text = "";
             // 
+            // addDescriptorControl1
+            // 
+            this.addDescriptorControl1.Location = new System.Drawing.Point(290, 498);
+            this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.ObjectName = null;
+            this.addDescriptorControl1.Size = new System.Drawing.Size(359, 167);
+            this.addDescriptorControl1.TabIndex = 12;
+            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 681);
+            this.ClientSize = new System.Drawing.Size(1370, 681);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.AddObjectButton);
             this.Controls.Add(this.label3);
