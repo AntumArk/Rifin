@@ -13,6 +13,7 @@ namespace Rifin.Data
         public string Name { get; set; }
         public List<Mat> Descriptors { get; set; }
         public List<Mat> Images { get; set; }
+        public List<KeyPoint[]> KeyPoints { get; set; }
        
     }
 }
