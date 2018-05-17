@@ -206,9 +206,9 @@ namespace Rifin
 
                         ////-- Draw only "good" matches
 
-                        Cv2.DrawMatches(src, src_keypoints, part.Images[0], db_keypoints,
+                      /*  Cv2.DrawMatches(src, src_keypoints, part.Images[0], db_keypoints,
                             good_matches, imgMatches, Scalar.All(-1), Scalar.All(-1),
-                            new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);
+                            new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);*/
 
 
                         Rect box = Cv2.BoundingRect(points);
@@ -249,16 +249,17 @@ namespace Rifin
             //Reads frame from camera
                      capture.Read(Source);
             // src = DetectFeatures(src);
-          
-           if (!matchingWorker.IsBusy)
-                    matchingWorker.RunWorkerAsync(Source);
-
-            //Updates mainWindow image to camera frame.
-            try
+            if (Source != null)
             {
                 Main_PictureBox.Image = Source.ToBitmap();
+                if (!matchingWorker.IsBusy)
+                    matchingWorker.RunWorkerAsync(Source);
             }
-            catch (Exception) { };
+
+            //Updates mainWindow image to camera frame.
+        
+               
+          
 
             
         }
