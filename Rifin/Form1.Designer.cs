@@ -191,6 +191,7 @@
             this.Advanced_Button.TabIndex = 11;
             this.Advanced_Button.Text = "Advanced Controls";
             this.Advanced_Button.UseVisualStyleBackColor = true;
+            this.Advanced_Button.Click += new System.EventHandler(this.Advanced_Button_Click);
             // 
             // label3
             // 

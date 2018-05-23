@@ -15,7 +15,7 @@ using OpenCvSharp.Extensions;
 using OpenCvSharp.XFeatures2D;
 using Rifin.Data;
 using Rifin.Forms;
-
+using OpenCvSharp.Cuda;
 namespace Rifin
 {
     public partial class MainWindow : Form
@@ -29,6 +29,7 @@ namespace Rifin
         public Mat Source;  //Video frames
         private System.Windows.Forms.Timer timer; //Used for reading data in the right time. 
 
+        private string cascadePath;
       //  Window window = new Window("window",WindowMode.FreeRatio);
         public MainWindow()
         {
@@ -150,6 +151,7 @@ namespace Rifin
 
             //Creates temp matrix
             Mat imgMatches = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8UC1);
+            src.CopyTo(imgMatches);
             if (src != null)
             {
                 //Step 3:
@@ -170,15 +172,15 @@ namespace Rifin
                 {
                     try
                     {
-                       detector.DetectAndCompute(part.Images[0],new Mat(),out db_keypoints, db_descriptors); //TODO error in here
-
-
+                      // detector.DetectAndCompute(part.Images[0],new Mat(),out db_keypoints, db_descriptors); //TODO error in here
+                        db_keypoints=detector.Detect(part.Images[0]);
+                        
                         ////-- Step 2: Matching descriptor vectors using FLANN matcher
                         FlannBasedMatcher matcher = new FlannBasedMatcher();
                         DMatch[] matches;
 
                         matches = matcher.Match(src_descriptors, part.Descriptors[0]);
-                        double max_dist = 0; double min_dist = 100;
+                        double max_dist = 100; double min_dist = 5;
 
                         ////-- Quick calculation of max and min distances between keypoints
                         for (int i = 0; i < src_descriptors.Rows; i++)
@@ -248,12 +250,15 @@ namespace Rifin
                 Mat Source = new Mat();
             //Reads frame from camera
                      capture.Read(Source);
+           
             // src = DetectFeatures(src);
             if (Source != null)
             {
-                Main_PictureBox.Image = Source.ToBitmap();
-                if (!matchingWorker.IsBusy)
-                    matchingWorker.RunWorkerAsync(Source);
+               // Cv2.FastNlMeansDenoisingColored(Source,Source);
+
+                Main_PictureBox.Image = MatchHOG(Source).ToBitmap();
+               // if (!matchingWorker.IsBusy)
+                  //  matchingWorker.RunWorkerAsync(Source);
             }
 
             //Updates mainWindow image to camera frame.
@@ -263,7 +268,60 @@ namespace Rifin
 
             
         }
+        private Mat MatchHOG(Mat src)
+        {
+            if (!string.IsNullOrEmpty(cascadePath))
+            {
+                CascadeClassifier classifier = new CascadeClassifier(cascadePath);
+                Rect[] matches = classifier.DetectMultiScale(src, 1.1, 3, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(100, 100), new OpenCvSharp.Size(640, 480));
 
+                var biggest = 0;
+                var biggestRect = new Rect();
+                var biggestRectloc = new Rect();
+                float xAvg = 0;
+                float yAvg = 0;
+                float xAvgSize = 0;
+                float yAvgSize = 0;
+                foreach (Rect rect in matches)
+                {
+                   
+                    // the HOG detector returns slightly larger rectangles than the real objects.
+                    // so we slightly shrink the rectangles to get a nicer output.
+                    Rect r = new Rect
+                    {
+                        X = rect.X + (int)Math.Round(rect.Width * 0.1),
+                        Y = rect.Y + (int)Math.Round(rect.Height * 0.1),
+                        Width = (int)Math.Round(rect.Width * 0.8),
+                        Height = (int)Math.Round(rect.Height * 0.8)
+                    };
+                    if (rect.Size.Height + rect.Size.Width > biggest)
+                    {
+                        biggestRect = r;
+                        biggestRectloc = rect;
+                    }
+                    xAvgSize += r.Width;
+                    yAvgSize += r.Height;
+                    xAvg += rect.Location.X;
+                    yAvg += rect.Location.Y;
+                }
+                if (matches.Length > 0)
+                {
+                    var avgLoc = new OpenCvSharp.Point((xAvg / matches.Length), (yAvg / matches.Length));
+
+                    Rect rr = new Rect
+                    {
+                        X = avgLoc.X,
+                        Y = avgLoc.Y,
+                        Width = (int)xAvgSize / matches.Length,
+                        Height = (int)yAvgSize / matches.Length,
+                    };
+
+                    src.Rectangle(rr.TopLeft, rr.BottomRight, Scalar.Red, 3, LineTypes.Link8, 0);
+                    src.PutText("Griff", new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
+                }
+            }
+            return src;
+        }
         /// <summary>
         /// Adds song to the list. NOT IMPLEMENTED
         /// </summary>
@@ -349,7 +407,14 @@ namespace Rifin
             addDescriptorControl1.Show();
         }
 
-      
-
+        private void Advanced_Button_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Please select classifier.xml");
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                cascadePath = openFileDialog1.FileName;
+            }
+        }
     }
 }
