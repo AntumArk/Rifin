@@ -36,7 +36,7 @@ namespace Rifin
             InitializeComponent();
 
             Source = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,Scalar.White);
-            addDescriptorControl1.Hide();
+           // addDescriptorControl1.Hide();
             capture = new VideoCapture(0);
 
             Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -92,26 +92,7 @@ namespace Rifin
             }
 
 
-            //Updating text field with those objects
-            richTextBox1.ResetText();
-            if (TrainingObjects != null)
-                foreach (var obj in TrainingObjects)
-                    if (obj != null)
-                        richTextBox1.AppendText(obj.ToString() + "\n");
-
-
-            timer = new System.Windows.Forms.Timer();
-            timer.Interval = (int)(1000 / 30);
-            timer.Tick += new EventHandler(timer_Tick);
-
-
-            //Initialize threads
-            matchingWorker = new BackgroundWorker();
-            matchingWorker.WorkerReportsProgress = false;
-            
-            matchingWorker.DoWork += new DoWorkEventHandler(FindMatches);
-            matchingWorker.ProgressChanged += new ProgressChangedEventHandler(MatchingWorker_progressChanged);
-            matchingWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MatchingCompleted);
+        
         }
 
         /// <summary>
@@ -125,7 +106,6 @@ namespace Rifin
             var result = (Mat)e.Result; //Result is a new image with rectangles showing found objects.
             if (result != null)
             {
-                Side_PictureBox.Image = result.ToBitmap();
 
               //  window.Image = result;
               //  window.ShowImage(result);
@@ -332,18 +312,7 @@ namespace Rifin
         {
 
         }
-        /// <summary>
-        /// Launches training window
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Training_Button_Click(object sender, EventArgs e)
-        {
-           // this.Hide();
-            TrainingForm n = new TrainingForm(this);
-            n.ShowDialog();
-            
-        }
+   
         
         /// <summary>
         /// Start and launch video
@@ -384,29 +353,8 @@ namespace Rifin
             capture.Release();
             Application.Exit();
         }
-        /// <summary>
-        /// Adds new object to the list when all of the descriptors, keypoints and images are saved.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void addDescriptorControl1_VisibleChanged(object sender, EventArgs e)
-        {
-            TrainingObjects.Add(addDescriptorControl1.ObjectName);
-            richTextBox1.ResetText();
-            if(TrainingObjects!=null)
-            foreach(var obj in TrainingObjects)
-                    if (obj != null)
-                        richTextBox1.AppendText(obj.ToString()+"\n");
-        }
-        /// <summary>
-        /// Shows add new object window
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddObjectButton_Click(object sender, EventArgs e)
-        {
-            addDescriptorControl1.Show();
-        }
+  
+      
 
         private void Advanced_Button_Click(object sender, EventArgs e)
         {
@@ -424,6 +372,21 @@ namespace Rifin
         }
 
         private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void haarAdd_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hogRemove_Button_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void hogAdd_Button_Click(object sender, EventArgs e)
         {
 
         }
