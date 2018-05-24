@@ -272,6 +272,7 @@ namespace Rifin
         {
             if (!string.IsNullOrEmpty(cascadePath))
             {
+          
                 CascadeClassifier classifier = new CascadeClassifier(cascadePath);
                 Rect[] matches = classifier.DetectMultiScale(src, 1.1, 3, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(100, 100), new OpenCvSharp.Size(640, 480));
 
@@ -415,6 +416,16 @@ namespace Rifin
             {
                 cascadePath = openFileDialog1.FileName;
             }
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

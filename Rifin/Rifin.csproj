@@ -73,17 +73,11 @@
     <Compile Include="Forms\AddDescriptorControl.Designer.cs">
       <DependentUpon>AddDescriptorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\LoadKeypointsControl.cs">
+    <Compile Include="Forms\SongControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Forms\LoadKeypointsControl.Designer.cs">
-      <DependentUpon>LoadKeypointsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TrainingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TrainingForm.Designer.cs">
-      <DependentUpon>TrainingForm.cs</DependentUpon>
+    <Compile Include="Forms\SongControl.Designer.cs">
+      <DependentUpon>SongControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,11 +87,8 @@
     <EmbeddedResource Include="Forms\AddDescriptorControl.resx">
       <DependentUpon>AddDescriptorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\LoadKeypointsControl.resx">
-      <DependentUpon>LoadKeypointsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TrainingForm.resx">
-      <DependentUpon>TrainingForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\SongControl.resx">
+      <DependentUpon>SongControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

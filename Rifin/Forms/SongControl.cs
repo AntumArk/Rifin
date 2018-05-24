@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Rifin.Forms
 {
-    public partial class LoadKeypointsControl : UserControl
+    public partial class SongControl : UserControl
     {
-        public LoadKeypointsControl()
+        public SongControl()
         {
             InitializeComponent();
         }
