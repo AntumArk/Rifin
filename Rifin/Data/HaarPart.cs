@@ -19,9 +19,11 @@ namespace Rifin.Data
         }
         public Mat GetHaarDetections(Mat src)
         {
+          //  var img = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,new Scalar(0,0,0,255));
+
             if (classifier!=null)
             {
-                Rect[] matches = classifier.DetectMultiScale(src, 1.1, 3, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(100, 100), new OpenCvSharp.Size(640, 480));
+                Rect[] matches = classifier.DetectMultiScale(src, 1.3, 7, HaarDetectionType.DoRoughSearch, new OpenCvSharp.Size(50, 50), new OpenCvSharp.Size(400, 400));
 
                 var biggest = 0;
                 var biggestRect = new Rect();
@@ -65,7 +67,7 @@ namespace Rifin.Data
                     };
 
                     src.Rectangle(rr.TopLeft, rr.BottomRight, Scalar.Red, 3, LineTypes.Link8, 0);
-                    src.PutText("Griff", new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
+                    src.PutText(Name, new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
                 }
             }
             return src;

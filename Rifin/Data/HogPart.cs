@@ -18,7 +18,7 @@ namespace Rifin.Data
             Name = name;
             descriptor = new HOGDescriptor(descriptorLocation);
         }
-        private Mat GetHogDetections(Mat src)
+        public Mat GetHogDetections(Mat src)
         {
             if (descriptor != null)
             {

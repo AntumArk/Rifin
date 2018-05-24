@@ -45,9 +45,9 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.logBox = new System.Windows.Forms.RichTextBox();
+            this.haar_Radio = new System.Windows.Forms.RadioButton();
+            this.hog_Radio = new System.Windows.Forms.RadioButton();
             this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -154,6 +154,7 @@
             this.haarObjects_ListBox.Size = new System.Drawing.Size(125, 84);
             this.haarObjects_ListBox.Sorted = true;
             this.haarObjects_ListBox.TabIndex = 15;
+            this.haarObjects_ListBox.SelectedIndexChanged += new System.EventHandler(this.haarObjects_ListBox_SelectedIndexChanged);
             // 
             // groupBox2
             // 
@@ -190,6 +191,7 @@
             this.hogObjects_ListBox.Size = new System.Drawing.Size(138, 84);
             this.hogObjects_ListBox.Sorted = true;
             this.hogObjects_ListBox.TabIndex = 15;
+            this.hogObjects_ListBox.SelectedIndexChanged += new System.EventHandler(this.hogObjects_ListBox_SelectedIndexChanged);
             // 
             // hogRemove_Button
             // 
@@ -244,6 +246,28 @@
             this.logBox.TabIndex = 19;
             this.logBox.Text = "";
             // 
+            // haar_Radio
+            // 
+            this.haar_Radio.AutoSize = true;
+            this.haar_Radio.Location = new System.Drawing.Point(12, 69);
+            this.haar_Radio.Name = "haar_Radio";
+            this.haar_Radio.Size = new System.Drawing.Size(77, 17);
+            this.haar_Radio.TabIndex = 20;
+            this.haar_Radio.TabStop = true;
+            this.haar_Radio.Text = "Use HAAR";
+            this.haar_Radio.UseVisualStyleBackColor = true;
+            // 
+            // hog_Radio
+            // 
+            this.hog_Radio.AutoSize = true;
+            this.hog_Radio.Location = new System.Drawing.Point(250, 69);
+            this.hog_Radio.Name = "hog_Radio";
+            this.hog_Radio.Size = new System.Drawing.Size(71, 17);
+            this.hog_Radio.TabIndex = 21;
+            this.hog_Radio.TabStop = true;
+            this.hog_Radio.Text = "Use HOG";
+            this.hog_Radio.UseVisualStyleBackColor = true;
+            // 
             // addDescriptorControl1
             // 
             this.addDescriptorControl1.DescriptorPath = null;
@@ -256,35 +280,13 @@
             this.addDescriptorControl1.TabIndex = 2;
             this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
             // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(12, 69);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(77, 17);
-            this.radioButton1.TabIndex = 20;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Use HAAR";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(250, 69);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(71, 17);
-            this.radioButton2.TabIndex = 21;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Use HOG";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1370, 681);
-            this.Controls.Add(this.radioButton2);
-            this.Controls.Add(this.radioButton1);
+            this.Controls.Add(this.hog_Radio);
+            this.Controls.Add(this.haar_Radio);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.Advanced_Button);
@@ -324,8 +326,8 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RichTextBox logBox;
         private Forms.AddDescriptorControl addDescriptorControl1;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton haar_Radio;
+        private System.Windows.Forms.RadioButton hog_Radio;
     }
 }
 

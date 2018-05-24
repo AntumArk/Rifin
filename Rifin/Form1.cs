@@ -27,6 +27,9 @@ namespace Rifin
         public List<HogPart> HogParts = new List<HogPart>(); //A list to hold information about a part. Its name and its descriptors.
         public List<HaarPart> HaarParts = new List<HaarPart>();
 
+        private List<HogPart> SelectedHogParts = new List<HogPart>(); //A list to hold information about a part. Its name and its descriptors.
+        private List<HaarPart> SelectedHaarParts = new List<HaarPart>();
+
         public VideoCapture capture;
 
         public Mat Source;  //Video frames
@@ -56,30 +59,38 @@ namespace Rifin
             // src = DetectFeatures(src);
             if (Source != null)
             {
-               // Cv2.FastNlMeansDenoisingColored(Source,Source);
+                // Cv2.FastNlMeansDenoisingColored(Source,Source);
 
-                Main_PictureBox.Image = HaarParts[0].GetHaarDetections(Source).ToBitmap();
-               // if (!matchingWorker.IsBusy)
-                  //  matchingWorker.RunWorkerAsync(Source);
+
+                if (haar_Radio.Checked&&SelectedHaarParts.Count!=0)
+                {
+                    Mat rectMat= new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U, new Scalar(0, 0, 0,0));
+                    foreach (var part in SelectedHaarParts)
+                    {
+                        Source = part.GetHaarDetections(Source);
+                    }
+                    // Cv2.AddWeighted(Source,255, rectMat,255,1, Source);
+                    // rectMat.CopyTo(Source);
+                   
+                }
+                else
+                    if (hog_Radio.Checked && SelectedHogParts.Count != 0)
+                {
+
+
+                }
+                    Main_PictureBox.Image =Source.ToBitmap();
+
+                // if (!matchingWorker.IsBusy)
+                //  matchingWorker.RunWorkerAsync(Source);
             }
 
             //Updates mainWindow image to camera frame.
         
                
-          
-
             
         }
-     
-        /// <summary>
-        /// Adds song to the list. NOT IMPLEMENTED
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddSong_Button_Click(object sender, EventArgs e)
-        {
 
-        }
    
         
         /// <summary>
@@ -172,7 +183,9 @@ namespace Rifin
             //Prepare video capture
             Source = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U, Scalar.White);
             capture = new VideoCapture(0);
-
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 100;
+            timer.Tick += new EventHandler(timer_Tick);
             //Step three hide components
             addDescriptorControl1.Hide();
 
@@ -244,6 +257,37 @@ namespace Rifin
                         addDescriptorControl1.LoadingSuccessful = false;
                         break;
                 }
+        }
+
+        private void haarObjects_ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SelectedHaarParts.Clear();
+            foreach (var part in HaarParts)
+            {
+
+            
+            foreach (var item in haarObjects_ListBox.SelectedItems)
+            {if(part.Name==(string)item)
+                    SelectedHaarParts.Add(part);
+                }
+          
+            }
+        }
+
+        private void hogObjects_ListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SelectedHogParts.Clear();
+            foreach (var part in HogParts)
+            {
+
+
+                foreach (var item in hogObjects_ListBox.SelectedItems)
+                {
+                    if (part.Name == (string)item)
+                        SelectedHogParts.Add(part);
+                }
+
+            }
         }
     }
 }
