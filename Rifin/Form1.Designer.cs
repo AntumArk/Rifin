@@ -35,8 +35,8 @@
             this.haarRemove_Button = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.haarObjects_ListBox = new System.Windows.Forms.CheckedListBox();
             this.haarAdd_Button = new System.Windows.Forms.Button();
+            this.haarObjects_ListBox = new System.Windows.Forms.CheckedListBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.hogAdd_Button = new System.Windows.Forms.Button();
             this.hogObjects_ListBox = new System.Windows.Forms.CheckedListBox();
@@ -44,6 +44,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.logBox = new System.Windows.Forms.RichTextBox();
+            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -104,13 +108,13 @@
             this.haarRemove_Button.TabIndex = 15;
             this.haarRemove_Button.Text = "Remove selected objects";
             this.haarRemove_Button.UseVisualStyleBackColor = true;
-          
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.groupBox1);
             this.flowLayoutPanel1.Controls.Add(this.groupBox2);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 77);
+            this.flowLayoutPanel1.Controls.Add(this.addDescriptorControl1);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 96);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(479, 415);
             this.flowLayoutPanel1.TabIndex = 17;
@@ -130,16 +134,6 @@
             this.groupBox1.Text = "HAAR";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
-            // haarObjects_ListBox
-            // 
-            this.haarObjects_ListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.haarObjects_ListBox.FormattingEnabled = true;
-            this.haarObjects_ListBox.Location = new System.Drawing.Point(9, 47);
-            this.haarObjects_ListBox.Name = "haarObjects_ListBox";
-            this.haarObjects_ListBox.Size = new System.Drawing.Size(125, 84);
-            this.haarObjects_ListBox.Sorted = true;
-            this.haarObjects_ListBox.TabIndex = 15;
-            // 
             // haarAdd_Button
             // 
             this.haarAdd_Button.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -150,6 +144,16 @@
             this.haarAdd_Button.Text = "Add object";
             this.haarAdd_Button.UseVisualStyleBackColor = true;
             this.haarAdd_Button.Click += new System.EventHandler(this.haarAdd_Button_Click);
+            // 
+            // haarObjects_ListBox
+            // 
+            this.haarObjects_ListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.haarObjects_ListBox.FormattingEnabled = true;
+            this.haarObjects_ListBox.Location = new System.Drawing.Point(9, 47);
+            this.haarObjects_ListBox.Name = "haarObjects_ListBox";
+            this.haarObjects_ListBox.Size = new System.Drawing.Size(125, 84);
+            this.haarObjects_ListBox.Sorted = true;
+            this.haarObjects_ListBox.TabIndex = 15;
             // 
             // groupBox2
             // 
@@ -223,19 +227,64 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.logBox);
             this.groupBox3.Controls.Add(this.tableLayoutPanel1);
             this.groupBox3.Location = new System.Drawing.Point(12, 517);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(310, 152);
+            this.groupBox3.Size = new System.Drawing.Size(884, 152);
             this.groupBox3.TabIndex = 19;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Stats";
+            // 
+            // logBox
+            // 
+            this.logBox.Location = new System.Drawing.Point(238, 23);
+            this.logBox.Name = "logBox";
+            this.logBox.Size = new System.Drawing.Size(495, 96);
+            this.logBox.TabIndex = 19;
+            this.logBox.Text = "";
+            // 
+            // addDescriptorControl1
+            // 
+            this.addDescriptorControl1.DescriptorPath = null;
+            this.addDescriptorControl1.LoadingSuccessful = false;
+            this.addDescriptorControl1.Location = new System.Drawing.Point(3, 234);
+            this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.ObjectName = null;
+            this.addDescriptorControl1.ObjectType = 0;
+            this.addDescriptorControl1.Size = new System.Drawing.Size(286, 110);
+            this.addDescriptorControl1.TabIndex = 2;
+            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(12, 69);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(77, 17);
+            this.radioButton1.TabIndex = 20;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Use HAAR";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(250, 69);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(71, 17);
+            this.radioButton2.TabIndex = 21;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "Use HOG";
+            this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1370, 681);
+            this.Controls.Add(this.radioButton2);
+            this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.Advanced_Button);
@@ -273,6 +322,10 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.RichTextBox logBox;
+        private Forms.AddDescriptorControl addDescriptorControl1;
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButton2;
     }
 }
 

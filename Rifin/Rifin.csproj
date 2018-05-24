@@ -60,7 +60,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Part.cs" />
+    <Compile Include="Data\DetectionTypes.cs" />
+    <Compile Include="Data\HaarPart.cs" />
+    <Compile Include="Data\HogPart.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -30,14 +30,14 @@
         {
             this.NewObjectTextBox = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.type_Label = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.CloseControlButton = new System.Windows.Forms.Button();
             this.SaveNewObjectButton = new System.Windows.Forms.Button();
             this.LoadedImagesLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.LoadResourcesButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,7 +51,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.type_Label);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.CloseControlButton);
             this.panel1.Controls.Add(this.SaveNewObjectButton);
@@ -64,6 +64,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(279, 105);
             this.panel1.TabIndex = 1;
+            // 
+            // type_Label
+            // 
+            this.type_Label.AutoSize = true;
+            this.type_Label.Location = new System.Drawing.Point(213, 40);
+            this.type_Label.Name = "type_Label";
+            this.type_Label.Size = new System.Drawing.Size(31, 13);
+            this.type_Label.TabIndex = 11;
+            this.type_Label.Text = "none";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(114, 41);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(81, 13);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Descriptor type:";
             // 
             // CloseControlButton
             // 
@@ -123,24 +141,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Object Name";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(114, 41);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(81, 13);
-            this.label3.TabIndex = 10;
-            this.label3.Text = "Descriptor type:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(213, 40);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(31, 13);
-            this.label4.TabIndex = 11;
-            this.label4.Text = "none";
-            // 
             // AddDescriptorControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,7 +164,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button LoadResourcesButton;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label type_Label;
         private System.Windows.Forms.Label label3;
     }
 }

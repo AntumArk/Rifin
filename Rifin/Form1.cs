@@ -20,204 +20,26 @@ namespace Rifin
 {
     public partial class MainWindow : Form
     {
-        public List<string> TrainingObjects = new List<string>();//A list of part names
-        public List<Part> Parts = new List<Part>(); //A list to hold information about a part. Its name and its descriptors.
+
+        public static string haarDataLocation;
+        public static string hogDataLocation;
+
+        public List<HogPart> HogParts = new List<HogPart>(); //A list to hold information about a part. Its name and its descriptors.
+        public List<HaarPart> HaarParts = new List<HaarPart>();
 
         public VideoCapture capture;
-        private BackgroundWorker matchingWorker;
 
         public Mat Source;  //Video frames
         private System.Windows.Forms.Timer timer; //Used for reading data in the right time. 
 
-        private string cascadePath;
       //  Window window = new Window("window",WindowMode.FreeRatio);
         public MainWindow()
         {
             InitializeComponent();
-
-            Source = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,Scalar.White);
-           // addDescriptorControl1.Hide();
-            capture = new VideoCapture(0);
-
-            Environment.CurrentDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            //Loading already prepared objects
-          var directories= Directory.EnumerateDirectories(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData")).ToList();
-            foreach (var dir in directories)
-            {
-               TrainingObjects.Add( dir.Substring(dir.LastIndexOf("\\") + 1));
-
-                Parts.Add(new Part { Name = dir.Substring(dir.LastIndexOf("\\") + 1) });
-            }
-
-            //Load data for each part
-            foreach (var part in Parts)
-            {
-                part.Descriptors = new List<Mat>();
-                part.Images = new List<Mat>();
-                //Step one: 
-                //Open folder of an object
-                var workPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "VisualData", part.Name);
-                Environment.CurrentDirectory = workPath;
-                //Step two:
-                //Load a list of items
-                var imgFiles = Directory.GetFileSystemEntries("Images");
-                var descFiles = Directory.GetFileSystemEntries("Descriptors");
-                Debug.WriteLine("Loading descriptors", "Loading");
-                //Load descriptors
-                foreach (var descFile in descFiles)
-                {
-
-                    using (var fs = new FileStorage(descFile, FileStorage.Mode.Read))
-                    {
-
-                        Mat mat = fs[part.Name].ReadMat();
-                        part.Descriptors.Add(mat);
-                     /*   using (var window = new Window(mat))
-                        {
-                            Cv2.WaitKey(0);
-                        }*/
-                    }
-                 
-                }
-                Debug.WriteLine("Loading Images", "Loading");
-                //Load images
-                foreach (var imgFile in imgFiles)
-                {
-                    Mat mat = Cv2.ImRead(imgFile,ImreadModes.Color);
-                    part.Images.Add(mat);
-                   
-                }
-                Debug.WriteLine("Loading completed", "Loading");
-
-            }
-
-
+            InitializeModules();
+            
+        }
         
-        }
-
-        /// <summary>
-        /// Updates image, when matching is completed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MatchingCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //    throw new NotImplementedException();
-            var result = (Mat)e.Result; //Result is a new image with rectangles showing found objects.
-            if (result != null)
-            {
-
-              //  window.Image = result;
-              //  window.ShowImage(result);
-            }
-
-        }
-
-        private void MatchingWorker_progressChanged(object sender, ProgressChangedEventArgs e)
-        {
-          //  throw new NotImplementedException();
-      
-        }
-   
-       
-        /// <summary>
-        /// Background thread for finding good matches and drawing them on
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void FindMatches(object sender, DoWorkEventArgs e)
-        {  
-            var src = e.Argument as Mat;  //Frame from camera
-
-            //Creates temp matrix
-            Mat imgMatches = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8UC1);
-            src.CopyTo(imgMatches);
-            if (src != null)
-            {
-                //Step 3:
-                //Change source image color
-                Cv2.CvtColor(src, src, ColorConversionCodes.RGB2GRAY);
-                KeyPoint[] src_keypoints;
-                KeyPoint[] db_keypoints;
-                MatOfFloat src_descriptors = new MatOfFloat();
-                MatOfFloat db_descriptors = new MatOfFloat();
-                // Step 1: Detect the keypoints using SURF Detector, compute the descriptors
-                int minHessian = 400;
-                SURF detector = SURF.Create(minHessian);
-                //Detect and compute descriptors
-                detector.DetectAndCompute(src, new Mat(), out src_keypoints, src_descriptors);
-
-                int z = 0;
-                foreach (var part in Parts)
-                {
-                    try
-                    {
-                      // detector.DetectAndCompute(part.Images[0],new Mat(),out db_keypoints, db_descriptors); //TODO error in here
-                        db_keypoints=detector.Detect(part.Images[0]);
-                        
-                        ////-- Step 2: Matching descriptor vectors using FLANN matcher
-                        FlannBasedMatcher matcher = new FlannBasedMatcher();
-                        DMatch[] matches;
-
-                        matches = matcher.Match(src_descriptors, part.Descriptors[0]);
-                        double max_dist = 100; double min_dist = 5;
-
-                        ////-- Quick calculation of max and min distances between keypoints
-                        for (int i = 0; i < src_descriptors.Rows; i++)
-                        {
-                            double dist = matches[i].Distance;
-                            if (dist < min_dist) min_dist = dist;
-                            if (dist > max_dist) max_dist = dist;
-                        }
-                        // Console.WriteLine("-- Max dist : %f", max_dist);
-                        // Console.WriteLine("-- Min dist : %f", min_dist);
-
-                        ////-- Draw only "good" matches (i.e. whose distance is less than 2*min_dist,
-                        ////-- or a small arbitrary value ( 0.02 ) in the event that min_dist is very
-                        ////-- small)  //-- PS.- radiusMatch can also be used here.
-                        List<DMatch> good_matches = new List<DMatch>();
-                        List<OpenCvSharp.Point> points = new List<OpenCvSharp.Point>();
-                        for (int i = 0; i < matches.Length; i++)
-                        {
-                            if (matches[i].Distance <= Math.Max(2 * min_dist, 0.02))
-                            {
-                                good_matches.Add(matches[i]);
-                                points.Add(src_keypoints[matches[i].TrainIdx].Pt);
-                            }
-                        }
-
-                        ////-- Draw only "good" matches
-
-                      /*  Cv2.DrawMatches(src, src_keypoints, part.Images[0], db_keypoints,
-                            good_matches, imgMatches, Scalar.All(-1), Scalar.All(-1),
-                            new List<byte>(), DrawMatchesFlags.NotDrawSinglePoints);*/
-
-
-                        Rect box = Cv2.BoundingRect(points);
-                        Cv2.Rectangle(imgMatches, box, Scalar.Green, 5);
-                        Cv2.PutText(imgMatches, part.Name, box.TopLeft, HersheyFonts.HersheyPlain, 5, Scalar.Beige);
-                        //    MessageBox.Show(" matches: " + matches.LongLength.ToString());
-
-
-
-                        z++;
-                        if (z == 1)
-                            break;
-                    }
-                    catch (Exception)
-                    {
-                        Debug.WriteLine("Matching failed", "Matching");
-                    }
-                }
-              
-            }
-            Debug.WriteLineIf(imgMatches == null, "Matches are empty");
-            if (imgMatches != null)
-            {
-                e.Result = imgMatches;
-           //     Side_PictureBox.Image = imgMatches.ToBitmap();
-            }
-        }
 
         /// <summary>
         /// Main event. Reads video image, shows it to the main window. Processes current frame in worker thread.
@@ -236,7 +58,7 @@ namespace Rifin
             {
                // Cv2.FastNlMeansDenoisingColored(Source,Source);
 
-                Main_PictureBox.Image = MatchHOG(Source).ToBitmap();
+                Main_PictureBox.Image = HaarParts[0].GetHaarDetections(Source).ToBitmap();
                // if (!matchingWorker.IsBusy)
                   //  matchingWorker.RunWorkerAsync(Source);
             }
@@ -248,61 +70,7 @@ namespace Rifin
 
             
         }
-        private Mat MatchHOG(Mat src)
-        {
-            if (!string.IsNullOrEmpty(cascadePath))
-            {
-          
-                CascadeClassifier classifier = new CascadeClassifier(cascadePath);
-                Rect[] matches = classifier.DetectMultiScale(src, 1.1, 3, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(100, 100), new OpenCvSharp.Size(640, 480));
-
-                var biggest = 0;
-                var biggestRect = new Rect();
-                var biggestRectloc = new Rect();
-                float xAvg = 0;
-                float yAvg = 0;
-                float xAvgSize = 0;
-                float yAvgSize = 0;
-                foreach (Rect rect in matches)
-                {
-                   
-                    // the HOG detector returns slightly larger rectangles than the real objects.
-                    // so we slightly shrink the rectangles to get a nicer output.
-                    Rect r = new Rect
-                    {
-                        X = rect.X + (int)Math.Round(rect.Width * 0.1),
-                        Y = rect.Y + (int)Math.Round(rect.Height * 0.1),
-                        Width = (int)Math.Round(rect.Width * 0.8),
-                        Height = (int)Math.Round(rect.Height * 0.8)
-                    };
-                    if (rect.Size.Height + rect.Size.Width > biggest)
-                    {
-                        biggestRect = r;
-                        biggestRectloc = rect;
-                    }
-                    xAvgSize += r.Width;
-                    yAvgSize += r.Height;
-                    xAvg += rect.Location.X;
-                    yAvg += rect.Location.Y;
-                }
-                if (matches.Length > 0)
-                {
-                    var avgLoc = new OpenCvSharp.Point((xAvg / matches.Length), (yAvg / matches.Length));
-
-                    Rect rr = new Rect
-                    {
-                        X = avgLoc.X,
-                        Y = avgLoc.Y,
-                        Width = (int)xAvgSize / matches.Length,
-                        Height = (int)yAvgSize / matches.Length,
-                    };
-
-                    src.Rectangle(rr.TopLeft, rr.BottomRight, Scalar.Red, 3, LineTypes.Link8, 0);
-                    src.PutText("Griff", new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
-                }
-            }
-            return src;
-        }
+     
         /// <summary>
         /// Adds song to the list. NOT IMPLEMENTED
         /// </summary>
@@ -358,12 +126,7 @@ namespace Rifin
 
         private void Advanced_Button_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Please select classifier.xml");
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            if (openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                cascadePath = openFileDialog1.FileName;
-            }
+         
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -378,7 +141,8 @@ namespace Rifin
 
         private void haarAdd_Button_Click(object sender, EventArgs e)
         {
-
+            addDescriptorControl1.SetType(0);
+            addDescriptorControl1.Show();
         }
 
         private void hogRemove_Button_Click(object sender, EventArgs e)
@@ -388,7 +152,98 @@ namespace Rifin
 
         private void hogAdd_Button_Click(object sender, EventArgs e)
         {
+            addDescriptorControl1.SetType(1);
+            addDescriptorControl1.Show();
+           
+        }
 
+
+        private void InitializeModules()
+        {
+            //Step one
+            //Load all of the trained objects
+            //While loading check if it is actually there.
+            CheckAndUpdateFolders();
+            HaarParts = GetHaarParts(haarDataLocation);
+            //TODO HOG part loading
+
+           
+            //Step two
+            //Prepare video capture
+            Source = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U, Scalar.White);
+            capture = new VideoCapture(0);
+
+            //Step three hide components
+            addDescriptorControl1.Hide();
+
+        }
+        private void CheckAndUpdateFolders()
+        {
+            var currentDir = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            Environment.CurrentDirectory = currentDir;
+            var directories = Directory.EnumerateDirectories(currentDir).ToList();
+            //Checks if the data folder is created, and if it is not, creates it.
+            if (!directories.Contains(Path.Combine(currentDir, "VisualData")))
+            {
+                Directory.CreateDirectory("VisualData");
+
+            }
+            //Loading already prepared objects
+            Environment.CurrentDirectory = Path.Combine(currentDir, "VisualData");
+            currentDir = Environment.CurrentDirectory;
+            var visualDirectories = Directory.EnumerateDirectories(currentDir).ToList();
+            if (!visualDirectories.Contains(Path.Combine(currentDir, "HaarData")))
+            {
+                Directory.CreateDirectory("HaarData");
+
+            }
+            haarDataLocation = Path.Combine(currentDir, "HaarData");
+            if (!visualDirectories.Contains(Path.Combine(currentDir, "HogData")))
+            {
+                Directory.CreateDirectory("HogData");
+
+            }
+            hogDataLocation = Path.Combine(currentDir, "HogData");
+
+        }
+
+        private List<HaarPart>GetHaarParts(string location)
+        {
+            logBox.AppendText("Loading Haar parts from " + location + System.Environment.NewLine);
+            var folders = Directory.EnumerateDirectories(location).ToList();
+            var parts = new List<HaarPart>();
+            foreach (var dir in folders)
+            {
+                logBox.AppendText("Loading Haar part from " + dir + System.Environment.NewLine);
+                //Update object list
+                haarObjects_ListBox.Items.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                var classifier= Directory.GetFileSystemEntries(dir);
+                parts.Add(new HaarPart ( dir.Substring(dir.LastIndexOf("\\") + 1),classifier[0]));
+                logBox.AppendText("Loaded Haar part " + dir.Substring(dir.LastIndexOf("\\") + 1)+ System.Environment.NewLine);
+            }
+            logBox.AppendText("Loading Haar parts completed. Num of parts: " + parts.Count+ System.Environment.NewLine);
+            return parts;
+
+            }
+
+        private void addDescriptorControl1_VisibleChanged(object sender, EventArgs e)
+        {
+            if(!addDescriptorControl1.Visible&&addDescriptorControl1.LoadingSuccessful)
+                switch (addDescriptorControl1.ObjectType)
+                {
+                case 0:
+                        HaarParts.Add(addDescriptorControl1.GetHaarPart());
+                        logBox.AppendText("Loaded Haar part " + System.Environment.NewLine);
+                        haarObjects_ListBox.Items.Add(addDescriptorControl1.GetHaarPart().Name);
+                        addDescriptorControl1.LoadingSuccessful = false;
+                        break;
+                    case 1:
+                        HogParts.Add(addDescriptorControl1.GetHogPart());
+                        logBox.AppendText("Loaded Hog part " + System.Environment.NewLine);
+                        hogObjects_ListBox.Items.Add(addDescriptorControl1.GetHogPart().Name);
+                        addDescriptorControl1.LoadingSuccessful = false;
+                        break;
+                }
         }
     }
 }
