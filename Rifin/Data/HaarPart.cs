@@ -12,18 +12,21 @@ namespace Rifin.Data
     {
         public string Name { get;  set; }
         public CascadeClassifier classifier;
+        private Random rnd = new Random();
+       public Scalar color;
         public HaarPart(string name, string classifierLocation)
         {
+            color=new Scalar(rnd.Next(256), rnd.Next(256), rnd.Next(256));
             Name = name;
             classifier = new CascadeClassifier(classifierLocation);
         }
-        public Mat GetHaarDetections(Mat src)
+        public Rect[] GetHaarDetections(Mat src)
         {
-          //  var img = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,new Scalar(0,0,0,255));
-
+            //  var img = new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U,new Scalar(0,0,0,255));
+            Rect[] matches= null;
             if (classifier!=null)
             {
-                Rect[] matches = classifier.DetectMultiScale(src, 1.3, 7, HaarDetectionType.DoRoughSearch, new OpenCvSharp.Size(50, 50), new OpenCvSharp.Size(400, 400));
+                matches = classifier.DetectMultiScale(src, 1.3, 7, HaarDetectionType.DoCannyPruning, new OpenCvSharp.Size(50, 50), new OpenCvSharp.Size(400, 400));
 
                 var biggest = 0;
                 var biggestRect = new Rect();
@@ -53,6 +56,8 @@ namespace Rifin.Data
                     yAvgSize += r.Height;
                     xAvg += rect.Location.X;
                     yAvg += rect.Location.Y;
+
+                   
                 }
                 if (matches.Length > 0)
                 {
@@ -66,11 +71,11 @@ namespace Rifin.Data
                         Height = (int)yAvgSize / matches.Length,
                     };
 
-                    src.Rectangle(rr.TopLeft, rr.BottomRight, Scalar.Red, 3, LineTypes.Link8, 0);
-                    src.PutText(Name, new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
+                 //   src.Rectangle(rr.TopLeft, rr.BottomRight, Scalar.Red, 3, LineTypes.Link8, 0);
+                  //  src.PutText(Name, new OpenCvSharp.Point(rr.Location.X + 5, rr.Location.Y + 20), HersheyFonts.HersheyPlain, 2, Scalar.Red, 3, LineTypes.Link8);
                 }
             }
-            return src;
+            return matches;
         }
     }
 }

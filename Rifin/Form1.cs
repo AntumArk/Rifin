@@ -64,10 +64,20 @@ namespace Rifin
 
                 if (haar_Radio.Checked&&SelectedHaarParts.Count!=0)
                 {
-                    Mat rectMat= new Mat(new OpenCvSharp.Size(640, 480), MatType.CV_8U, new Scalar(0, 0, 0,0));
+                    List<Rect[]> foundMatches = new List<Rect[]>();
                     foreach (var part in SelectedHaarParts)
                     {
-                        Source = part.GetHaarDetections(Source);
+                        foundMatches.Add(part.GetHaarDetections(Source));
+                    }
+                    int i = 0;
+                    foreach (var match in foundMatches)
+                    {
+                        foreach (Rect rect in match)
+                        {
+                              Source.Rectangle(rect.TopLeft, rect.BottomRight, SelectedHaarParts[i].color, 3, LineTypes.Link8, 0);
+                            Source.PutText(SelectedHaarParts[i].Name, new OpenCvSharp.Point(rect.Location.X + 5, rect.Location.Y + 20), HersheyFonts.HersheyPlain, 2, SelectedHaarParts[i].color,2, LineTypes.Link8);
+                        }
+                        i++;
                     }
                     // Cv2.AddWeighted(Source,255, rectMat,255,1, Source);
                     // rectMat.CopyTo(Source);
@@ -266,7 +276,7 @@ namespace Rifin
             {
 
             
-            foreach (var item in haarObjects_ListBox.SelectedItems)
+            foreach (var item in haarObjects_ListBox.CheckedItems)
             {if(part.Name==(string)item)
                     SelectedHaarParts.Add(part);
                 }
@@ -281,7 +291,7 @@ namespace Rifin
             {
 
 
-                foreach (var item in hogObjects_ListBox.SelectedItems)
+                foreach (var item in hogObjects_ListBox.CheckedItems)
                 {
                     if (part.Name == (string)item)
                         SelectedHogParts.Add(part);
