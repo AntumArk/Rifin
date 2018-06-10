@@ -43,7 +43,7 @@ namespace Rifin
             
         }
         
-
+        
         /// <summary>
         /// Main event. Reads video image, shows it to the main window. Processes current frame in worker thread.
         /// </summary>
@@ -60,8 +60,8 @@ namespace Rifin
             if (Source != null)
             {
                 // Cv2.FastNlMeansDenoisingColored(Source,Source);
-
-
+                //  Source = FilteredImage(Source);
+                Cv2.Flip(Source, Source, FlipMode.Y);
                 if (haar_Radio.Checked&&SelectedHaarParts.Count!=0)
                 {
                     List<Rect[]> foundMatches = new List<Rect[]>();
@@ -89,7 +89,8 @@ namespace Rifin
 
 
                 }
-                    Main_PictureBox.Image =Source.ToBitmap();
+                try { Main_PictureBox.Image = Source.ToBitmap(); } catch { }
+                    
 
                 // if (!matchingWorker.IsBusy)
                 //  matchingWorker.RunWorkerAsync(Source);
@@ -100,9 +101,20 @@ namespace Rifin
                
             
         }
+        //Paveiksliuko filtravimas naudojant matricas
+        private Mat FilteredImage(Mat input)
+        {
+            Mat equalized = new Mat() ;
+            Cv2.CvtColor(input, equalized, ColorConversionCodes.BGR2YCrCb);
+            var channels = equalized.Split();
+            Cv2.EqualizeHist(channels[0], channels[0]);
+            Cv2.Merge(channels, equalized);
+            Cv2.CvtColor(equalized, equalized, ColorConversionCodes.YCrCb2BGR);
 
-   
-        
+            return equalized;
+        }
+
+
         /// <summary>
         /// Start and launch video
         /// </summary>
@@ -168,6 +180,24 @@ namespace Rifin
 
         private void hogRemove_Button_Click(object sender, EventArgs e)
         {
+            DialogResult dialogResult = MessageBox.Show("Do you really want to delete these objects? " + System.Environment.NewLine, "Object deletion", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                var objects = hogObjects_ListBox.CheckedItems;
+                try
+                {
+                    foreach (var item in objects)
+                    {
+                        var path = Path.Combine(hogDataLocation, (string)item);
+                        Directory.Delete(path, true);
+                        HogParts.Remove(HogParts.First(c => c.Name == (string)item));
+                        hogObjects_ListBox.Items.Remove((string)item);
+                    };
+                }
+                catch (Exception) { };
+
+
+            }
 
         }
 
@@ -186,6 +216,7 @@ namespace Rifin
             //While loading check if it is actually there.
             CheckAndUpdateFolders();
             HaarParts = GetHaarParts(haarDataLocation);
+            HogParts = GetHogParts(hogDataLocation);
             //TODO HOG part loading
 
            
@@ -248,7 +279,24 @@ namespace Rifin
             return parts;
 
             }
+        private List<HogPart> GetHogParts(string location)
+        {
+            logBox.AppendText("Loading Hog parts from " + location + System.Environment.NewLine);
+            var folders = Directory.EnumerateDirectories(location).ToList();
+            var parts = new List<HogPart>();
+            foreach (var dir in folders)
+            {
+                logBox.AppendText("Loading Hog part from " + dir + System.Environment.NewLine);
+                //Update object list
+                hogObjects_ListBox.Items.Add(dir.Substring(dir.LastIndexOf("\\") + 1));
+                var classifier = Directory.GetFileSystemEntries(dir);
+                parts.Add(new HogPart(dir.Substring(dir.LastIndexOf("\\") + 1), classifier[0]));
+                logBox.AppendText("Loaded Hog part " + dir.Substring(dir.LastIndexOf("\\") + 1) + System.Environment.NewLine);
+            }
+            logBox.AppendText("Loading Hog parts completed. Num of parts: " + parts.Count + System.Environment.NewLine);
+            return parts;
 
+        }
         private void addDescriptorControl1_VisibleChanged(object sender, EventArgs e)
         {
             if(!addDescriptorControl1.Visible&&addDescriptorControl1.LoadingSuccessful)
@@ -298,6 +346,30 @@ namespace Rifin
                 }
 
             }
+        }
+
+        private void haarRemove_Button_Click(object sender, EventArgs e)
+        {
+           DialogResult dialogResult= MessageBox.Show("Do you really want to delete these objects? " + System.Environment.NewLine + haarObjects_ListBox.CheckedItems,"Object deletion", MessageBoxButtons.YesNo);
+            if (dialogResult==DialogResult.Yes)
+            {
+                var objects = haarObjects_ListBox.CheckedItems;
+                try
+                {
+                    foreach (var item in objects)
+                    {
+                        var path = Path.Combine(haarDataLocation, (string)item);
+                        Directory.Delete(path, true);
+                        HaarParts.Remove(HaarParts.First(c => c.Name == (string)item));
+                        haarObjects_ListBox.Items.Remove((string)item);
+                    };
+                }
+                catch (Exception) { };
+
+
+            }
+          
+
         }
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.Main_PictureBox = new System.Windows.Forms.PictureBox();
             this.StartSteam_Button = new System.Windows.Forms.CheckBox();
             this.Advanced_Button = new System.Windows.Forms.Button();
@@ -42,12 +43,13 @@
             this.hogObjects_ListBox = new System.Windows.Forms.CheckedListBox();
             this.hogRemove_Button = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.logBox = new System.Windows.Forms.RichTextBox();
             this.haar_Radio = new System.Windows.Forms.RadioButton();
             this.hog_Radio = new System.Windows.Forms.RadioButton();
-            this.addDescriptorControl1 = new Rifin.Forms.AddDescriptorControl();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.Main_PictureBox)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -108,6 +110,7 @@
             this.haarRemove_Button.TabIndex = 15;
             this.haarRemove_Button.Text = "Remove selected objects";
             this.haarRemove_Button.UseVisualStyleBackColor = true;
+            this.haarRemove_Button.Click += new System.EventHandler(this.haarRemove_Button_Click);
             // 
             // flowLayoutPanel1
             // 
@@ -214,6 +217,18 @@
             this.label1.TabIndex = 14;
             this.label1.Text = "Object List";
             // 
+            // addDescriptorControl1
+            // 
+            this.addDescriptorControl1.DescriptorPath = null;
+            this.addDescriptorControl1.LoadingSuccessful = false;
+            this.addDescriptorControl1.Location = new System.Drawing.Point(3, 234);
+            this.addDescriptorControl1.Name = "addDescriptorControl1";
+            this.addDescriptorControl1.ObjectName = null;
+            this.addDescriptorControl1.ObjectType = 0;
+            this.addDescriptorControl1.Size = new System.Drawing.Size(286, 110);
+            this.addDescriptorControl1.TabIndex = 2;
+            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
@@ -268,18 +283,6 @@
             this.hog_Radio.Text = "Use HOG";
             this.hog_Radio.UseVisualStyleBackColor = true;
             // 
-            // addDescriptorControl1
-            // 
-            this.addDescriptorControl1.DescriptorPath = null;
-            this.addDescriptorControl1.LoadingSuccessful = false;
-            this.addDescriptorControl1.Location = new System.Drawing.Point(3, 234);
-            this.addDescriptorControl1.Name = "addDescriptorControl1";
-            this.addDescriptorControl1.ObjectName = null;
-            this.addDescriptorControl1.ObjectType = 0;
-            this.addDescriptorControl1.Size = new System.Drawing.Size(286, 110);
-            this.addDescriptorControl1.TabIndex = 2;
-            this.addDescriptorControl1.VisibleChanged += new System.EventHandler(this.addDescriptorControl1_VisibleChanged);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -328,6 +331,7 @@
         private Forms.AddDescriptorControl addDescriptorControl1;
         private System.Windows.Forms.RadioButton haar_Radio;
         private System.Windows.Forms.RadioButton hog_Radio;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

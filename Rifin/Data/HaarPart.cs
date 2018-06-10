@@ -26,7 +26,7 @@ namespace Rifin.Data
             Rect[] matches= null;
             if (classifier!=null)
             {
-                matches = classifier.DetectMultiScale(src, 1.3, 7, HaarDetectionType.DoCannyPruning, new OpenCvSharp.Size(50, 50), new OpenCvSharp.Size(400, 400));
+                matches = classifier.DetectMultiScale(src, 1.1, 20, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(70, 70), new OpenCvSharp.Size(640, 480));
 
                 var biggest = 0;
                 var biggestRect = new Rect();

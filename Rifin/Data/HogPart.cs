@@ -22,7 +22,9 @@ namespace Rifin.Data
         {
             if (descriptor != null)
             {
-                //var stuff = descriptor.DetectMultiScaleROI(src);
+                Rect[] locations;
+                DetectionROI[] Rois ;
+               // var stuff = descriptor.DetectMultiScaleROI(src, out blah, out moreblah);
                // Rect[] matches = classifier.DetectMultiScale(src, 1.1, 3, HaarDetectionType.FindBiggestObject, new OpenCvSharp.Size(100, 100), new OpenCvSharp.Size(640, 480));
 
              
